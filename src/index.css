@@ -1,1 +1,56 @@
 @import "tailwindcss";
+
+@theme {
+  --animate-twinkle: move-twink-back 200s linear infinite;
+  --animate-clouds: move-clouds-back 1000s linear infinite;
+
+  --scroll-indicator-fill: #f06;
+
+  @keyframes move-twink-back {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -10000px 5000px;
+    }
+  }
+
+  @keyframes move-clouds-back {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -10000px 0;
+    }
+  }
+}
+@layer base {
+  * {
+    @apply m-0 p-0;
+  }
+
+  html,
+  body {
+    @apply flex justify-center items-center bg-black;
+    scrollbar-width: none; /* Hides scrollbar for Firefox */
+    -ms-overflow-style: none; /* Hides scrollbar for IE/Edge */
+  }
+
+  body::-webkit-scrollbar {
+    display: none; /* Hides scrollbar for Chrome/Safari */
+  }
+}
+
+.stars {
+  background: #000 url(./assets/stars.png) repeat top center;
+}
+
+.twinkling {
+  background: transparent url(./assets/twinkling.png) repeat top center;
+  animation: var(--animate-twinkle);
+}
+
+.clouds {
+  background: transparent url(./assets/clouds3.png) repeat top center;
+  animation: var(--animate-clouds);
+}
