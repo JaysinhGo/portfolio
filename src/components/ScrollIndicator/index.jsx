@@ -6,10 +6,10 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(ScrollTrigger);
 
 function ScrollIndicator() {
-  const scrollContainerRef = useRef(null);
-  const svgRef = useRef(null);
-  const circleRef = useRef(null);
-  const trackRectRef = useRef(null);
+  const scrollContainerRef = useRef(null); // Scrolling area
+  const svgRef = useRef(null); // SVG container
+  const circleRef = useRef(null); // Moving dot
+  const trackRectRef = useRef(null); // Track rectangle
 
   useGSAP(() => {
     const svg = svgRef.current;
@@ -21,25 +21,32 @@ function ScrollIndicator() {
 
     gsap.set(svg, { transformOrigin: "center", scale: 1 });
 
-    // Opposite sync animation for circle and track
-    const tl = gsap.timeline({
-      defaults: { ease: "power2.inOut", repeat: -1, yoyo: true },
+    // Animate dot movement
+    gsap.to(circle, {
+      attr: { cy: 100 },
+      opacity: 0.1,
+      duration: 1.4,
+      repeat: -1,
+      yoyo: true,
+      ease: "power1.inOut",
     });
-    tl.to(circle, { attr: { cy: 100 }, opacity: 0.1, duration: 1.4 }, 0).to(
-      track,
-      { height: 80, duration: 1.4 },
-      0
-    );
 
-    // Shrinks SVG on scroll
+    // Animate track height
+    gsap.to(track, {
+      height: 105,
+      duration: 1.2,
+      repeat: -1,
+      yoyo: true,
+      ease: "linear",
+    });
+
+    // Shrink SVG on scroll
     gsap.to(svg, {
       scrollTrigger: {
         trigger: container,
         start: "top top",
         end: "bottom bottom",
         scrub: 0.4,
-        onUpdate: () => gsap.set(svg, { willChange: "transform" }),
-        onLeave: () => gsap.set(svg, { willChange: "auto" }),
       },
       scale: 0,
     });
@@ -54,7 +61,7 @@ function ScrollIndicator() {
           height="90"
           viewBox="0 0 50 130"
           xmlns="http://www.w3.org/2000/svg"
-          style={{ willChange: "transform" }}
+          style={{ willChange: "transform" }} // GPU optimization
         >
           <rect
             ref={trackRectRef}
