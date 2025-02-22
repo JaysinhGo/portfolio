@@ -194,7 +194,7 @@ const SpiralIntro = () => {
                 const maxDistance = 0.1; // 20% range divided by 2
 
                 // Calculate blur intensity
-                blur = 50 * (1 - distance / maxDistance); // Max 50px blur
+                blur = 30 * (1 - distance / maxDistance); // Max 30px blur
               }
             }
 
