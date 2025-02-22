@@ -125,17 +125,7 @@ const SpiralIntro = () => {
         },
       }),
 
-      // Final fade out animation
-      fadeOut: gsap.timeline({
-        scrollTrigger: {
-          trigger: scrollContainerRef.current,
-          start: "80% top",
-          end: "100% bottom",
-          scrub: 1,
-        },
-      }),
-
-      // Text animation
+      // Text fade and movement animation
       text: gsap.timeline({
         scrollTrigger: {
           trigger: scrollContainerRef.current,
@@ -144,37 +134,65 @@ const SpiralIntro = () => {
           scrub: 1,
           onUpdate: (self) => {
             const progress = self.progress;
+
+            // Skip if no scroll movement
+            if ((progress === self.getVelocity()) === 0) return;
+
             let opacity, yPos;
 
-            if (progress < 0.2) {
-              const t = progress / 0.2;
-              opacity = gsap.utils.clamp(0, 1, t);
-              yPos = (1 - t) * 100;
-            } else if (progress > 0.8) {
-              const t = (progress - 0.8) / 0.2;
-              opacity = gsap.utils.clamp(0, 1, 1 - t);
-              yPos = -t * 100;
+            // Determine animation phase (entry, middle, or exit)
+            const t =
+              progress < 0.2 // Entry phase
+                ? progress / 0.2
+                : progress > 0.8 // Exit phase
+                ? (progress - 0.8) / 0.2
+                : null; // Middle phase
+
+            if (t !== null) {
+              // Calculate fade and position for entry/exit
+              opacity =
+                progress < 0.2
+                  ? gsap.utils.clamp(0, 1, t) // Fade in
+                  : gsap.utils.clamp(0, 1, 1 - t); // Fade out
+              yPos = progress < 0.2 ? (1 - t) * 100 : -t * 100; // Slide movement
             } else {
+              // Full opacity and centered in middle
               opacity = 1;
               yPos = 0;
             }
 
-            gsap.to(nameRef.current, {
-              opacity,
-              y: -yPos,
-              duration: 0.5,
-              ease: "power2.out",
-              overwrite: "auto",
-            });
+            // Apply animations efficiently
+            requestAnimationFrame(() => {
+              const config = {
+                duration: 0.5,
+                ease: "power2.out",
+                overwrite: "auto",
+              };
 
-            gsap.to(titleRef.current, {
-              opacity,
-              y: yPos,
-              duration: 0.5,
-              ease: "power2.out",
-              overwrite: "auto",
+              // Name moves up/down opposite to title
+              gsap.to(nameRef.current, {
+                ...config,
+                opacity,
+                y: -yPos,
+              });
+
+              gsap.to(titleRef.current, {
+                ...config,
+                opacity,
+                y: yPos,
+              });
             });
           },
+        },
+      }),
+
+      // Final fade out animation
+      fadeOut: gsap.timeline({
+        scrollTrigger: {
+          trigger: scrollContainerRef.current,
+          start: "80% top",
+          end: "100% bottom",
+          scrub: 1,
         },
       }),
     };
@@ -201,7 +219,7 @@ const SpiralIntro = () => {
     };
   }, [opacities, radius]);
 
-  // Set initial state
+  // Simple initial state
   useGSAP(() => {
     gsap.set([nameRef.current, titleRef.current], {
       opacity: 0,
@@ -210,7 +228,7 @@ const SpiralIntro = () => {
   }, []);
 
   return (
-    <div ref={scrollContainerRef} className="relative w-screen h-[1200vh]">
+    <div ref={scrollContainerRef} className="relative w-screen h-[1600vh]">
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
