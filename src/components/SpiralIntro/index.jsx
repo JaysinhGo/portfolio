@@ -22,6 +22,7 @@ const getShiningColor = (index, progress) => {
 
 const SpiralIntro = () => {
   // Refs for DOM elements
+  const svgRef = useRef(null);
   const circles = useRef([]);
   const groupRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -95,7 +96,7 @@ const SpiralIntro = () => {
         },
       }),
 
-      // Main animation
+      // Main animation with optimized breathing and circle effects
       main: gsap.timeline({
         scrollTrigger: {
           trigger: scrollContainerRef.current,
@@ -104,18 +105,51 @@ const SpiralIntro = () => {
           scrub: 0.3,
           onUpdate: (self) => {
             if (self.progress <= 0) return;
-            requestAnimationFrame(() => {
-              circles.current.forEach((circle, i) => {
-                const progress = self.progress;
-                const fastBreath =
-                  Math.sin(progress * Math.PI * 5 + i * 0.1) * 0.05;
-                const slowBreath =
-                  Math.sin(progress * Math.PI * 2 + i * 0.1) * 0.15;
 
+            const progress = self.progress;
+
+            requestAnimationFrame(() => {
+              // SVG breathing animation (20-100% scroll)
+              if (progress >= 0.2) {
+                const breathProgress = (progress - 0.2) / 0.8; // Normalize to 0-1 range
+
+                // Combined wave effects for organic movement
+                const waves = {
+                  slow: Math.sin(breathProgress * Math.PI * 2) * 0.3, // Base wave
+                  fast: Math.sin(breathProgress * Math.PI * 4) * 0.2, // Quick pulses
+                  pulse: Math.sin(breathProgress * Math.PI * 8) * 0.15, // Micro pulses
+                  micro: Math.sin(breathProgress * Math.PI * 16) * 0.05, // Fine detail
+                };
+
+                const breathEffect =
+                  waves.slow + waves.fast + waves.pulse + waves.micro;
+
+                // Apply combined breathing effect to SVG
+                gsap.to(svgRef.current, {
+                  scale: 1 + breathEffect * 1.2, // Expand/contract
+                  rotate: breathEffect * 8, // Slight rotation
+                  x: breathEffect * 20, // Horizontal drift
+                  y: breathEffect * 20, // Vertical drift
+                  duration: 0.3,
+                  ease: "power2.out",
+                  overwrite: true,
+                });
+              }
+
+              // Individual circle animations
+              circles.current.forEach((circle, i) => {
+                // Dual-wave breathing effect per circle
+                const fastBreath =
+                  Math.sin(progress * Math.PI * 5 + i * 0.1) * 0.05; // Quick pulse
+                const slowBreath =
+                  Math.sin(progress * Math.PI * 2 + i * 0.1) * 0.15; // Slow pulse
+                const totalBreath = fastBreath + slowBreath;
+
+                // Update circle properties
                 gsap.to(circle, {
                   stroke: getShiningColor(i, progress),
-                  attr: { r: radius[i] * (1 + fastBreath + slowBreath) },
-                  strokeWidth: 1 + Math.abs(fastBreath + slowBreath) * 1.5,
+                  attr: { r: radius[i] * (1 + totalBreath) }, // Size pulsing
+                  strokeWidth: 1 + Math.abs(totalBreath) * 1.5, // Stroke breathing
                   duration: 0.1,
                   overwrite: "auto",
                 });
@@ -125,7 +159,7 @@ const SpiralIntro = () => {
         },
       }),
 
-      // Text fade and movement animation
+      // Text animation with middle blur
       text: gsap.timeline({
         scrollTrigger: {
           trigger: scrollContainerRef.current,
@@ -134,53 +168,44 @@ const SpiralIntro = () => {
           scrub: 1,
           onUpdate: (self) => {
             const progress = self.progress;
+            let opacity,
+              yPos,
+              blur = 0;
 
-            // Skip if no scroll movement
-            if ((progress === self.getVelocity()) === 0) return;
-
-            let opacity, yPos;
-
-            // Determine animation phase (entry, middle, or exit)
-            const t =
-              progress < 0.2 // Entry phase
-                ? progress / 0.2
-                : progress > 0.8 // Exit phase
-                ? (progress - 0.8) / 0.2
-                : null; // Middle phase
-
-            if (t !== null) {
-              // Calculate fade and position for entry/exit
-              opacity =
-                progress < 0.2
-                  ? gsap.utils.clamp(0, 1, t) // Fade in
-                  : gsap.utils.clamp(0, 1, 1 - t); // Fade out
-              yPos = progress < 0.2 ? (1 - t) * 100 : -t * 100; // Slide movement
+            if (progress < 0.2) {
+              // Entry animation (0-20%)
+              const t = progress / 0.2;
+              opacity = gsap.utils.clamp(0, 1, t);
+              yPos = (1 - t) * 100;
+            } else if (progress > 0.8) {
+              // Exit animation (80-100%)
+              const t = (progress - 0.8) / 0.2;
+              opacity = gsap.utils.clamp(0, 1, 1 - t);
+              yPos = -t * 100;
             } else {
-              // Full opacity and centered in middle
+              // Middle state (20-80%)
               opacity = 1;
               yPos = 0;
+
+              // Blur only during 40-60% of scroll
+              if (progress >= 0.4 && progress <= 0.6) {
+                const midPoint = 0.5;
+                const distance = Math.abs(progress - midPoint);
+                const maxDistance = 0.1; // 20% range divided by 2
+
+                // Calculate blur intensity
+                blur = 50 * (1 - distance / maxDistance); // Max 50px blur
+              }
             }
 
-            // Apply animations efficiently
-            requestAnimationFrame(() => {
-              const config = {
-                duration: 0.5,
-                ease: "power2.out",
-                overwrite: "auto",
-              };
-
-              // Name moves up/down opposite to title
-              gsap.to(nameRef.current, {
-                ...config,
-                opacity,
-                y: -yPos,
-              });
-
-              gsap.to(titleRef.current, {
-                ...config,
-                opacity,
-                y: yPos,
-              });
+            // Apply animations
+            gsap.to([nameRef.current, titleRef.current], {
+              opacity,
+              y: (i) => (i === 0 ? -yPos : yPos),
+              filter: blur ? `blur(${blur}px)` : "none",
+              duration: 0.2,
+              ease: "power2.out",
+              overwrite: true,
             });
           },
         },
@@ -228,9 +253,10 @@ const SpiralIntro = () => {
   }, []);
 
   return (
-    <div ref={scrollContainerRef} className="relative w-screen h-[1600vh]">
+    <div ref={scrollContainerRef} className="relative w-screen h-[1400vh]">
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
         <svg
+          ref={svgRef}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="-100 -100 1000 1000"
           style={{
