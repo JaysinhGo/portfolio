@@ -5,27 +5,28 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Random color generator for initial circle colors
 const getRandomHSL = () => {
-  // More vibrant color ranges
   const hue = Math.random() * 360;
   const saturation = Math.random() * 20 + 80; // 80-100%
   const lightness = Math.random() * 30 + 55; // 55-85%
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
-// Optimized color generation
+// Dynamic color generator for animation
 const getShiningColor = (index, progress) => {
-  const hue = (index * 15 + progress * 1080) % 360;
-  const shimmer = Math.sin(progress * Math.PI * 15) * 30;
+  const hue = (index * 15 + progress * 1080) % 360; // Color rotation
+  const shimmer = Math.sin(progress * Math.PI * 15) * 30; // Shimmer effect
   return `hsl(${hue}, 100%, ${55 + Math.sin(progress * Math.PI * 12) * 20}%)`;
 };
 
 const SpiralIntro = () => {
+  // Refs for DOM elements
   const circles = useRef([]);
   const groupRef = useRef(null);
   const scrollContainerRef = useRef(null);
 
-  // Memoize static arrays to prevent recalculation
+  // Memoized arrays for spiral configuration
   const { radius, dashArrays, transforms, opacities } = useMemo(
     () => ({
       radius: [
@@ -63,17 +64,32 @@ const SpiralIntro = () => {
   );
 
   useGSAP(() => {
-    // Animation phases
     const animations = {
+      // Controls overall visibility during scroll
+      visibility: gsap.timeline({
+        scrollTrigger: {
+          trigger: scrollContainerRef.current,
+          start: "-10% top",
+          end: "100% bottom",
+          onUpdate: (self) => {
+            gsap.set(groupRef.current, {
+              opacity: self.progress > 0 && self.progress < 1 ? 0.8 : 0,
+            });
+          },
+        },
+      }),
+
+      // Initial fade in animation (0-20%)
       fadeIn: gsap.timeline({
         scrollTrigger: {
           trigger: scrollContainerRef.current,
-          start: "0% top",
+          start: "-10% top",
           end: "20% bottom",
           scrub: 1,
         },
       }),
 
+      // Main animation with rotation and breathing (10-100%)
       main: gsap.timeline({
         scrollTrigger: {
           trigger: scrollContainerRef.current,
@@ -85,12 +101,14 @@ const SpiralIntro = () => {
 
             requestAnimationFrame(() => {
               circles.current.forEach((circle, i) => {
+                // Breathing effect calculations
                 const progress = self.progress;
                 const fastBreath =
                   Math.sin(progress * Math.PI * 5 + i * 0.1) * 0.05;
                 const slowBreath =
                   Math.sin(progress * Math.PI * 2 + i * 0.1) * 0.15;
 
+                // Apply animations to each circle
                 gsap.to(circle, {
                   stroke: getShiningColor(i, progress),
                   attr: { r: radius[i] * (1 + fastBreath + slowBreath) },
@@ -104,6 +122,7 @@ const SpiralIntro = () => {
         },
       }),
 
+      // Final fade out animation (80-100%)
       fadeOut: gsap.timeline({
         scrollTrigger: {
           trigger: scrollContainerRef.current,
@@ -114,21 +133,24 @@ const SpiralIntro = () => {
       }),
     };
 
-    // Setup animations
+    // Setup individual circle animations
     circles.current.forEach((circle, i) => {
       animations.fadeIn.to(circle, { opacity: opacities[i] }, i * 0.05);
     });
 
+    // Setup group rotation
     animations.main.to(groupRef.current, {
       rotation: 360 * 8,
       transformOrigin: "center center",
       ease: "none",
     });
 
+    // Reverse fade out animation
     [...circles.current].reverse().forEach((circle, i) => {
       animations.fadeOut.to(circle, { opacity: 0 }, i * 0.05);
     });
 
+    // Cleanup function
     return () => {
       Object.values(animations).forEach((tl) => tl.kill());
     };
