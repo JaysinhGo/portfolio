@@ -188,13 +188,13 @@ const SpiralIntro = () => {
               yPos = 0;
 
               // Blur only during 40-60% of scroll
-              if (progress >= 0.4 && progress <= 0.6) {
+              if (progress >= 0.4 && progress <= 0.7) {
                 const midPoint = 0.5;
                 const distance = Math.abs(progress - midPoint);
                 const maxDistance = 0.1; // 20% range divided by 2
 
                 // Calculate blur intensity
-                blur = 20 * (1 - distance / maxDistance); // Max 30px blur
+                blur = 50 * (1 - distance / maxDistance); // Max 30px blur
               }
             }
 
