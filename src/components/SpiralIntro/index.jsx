@@ -194,7 +194,10 @@ const SpiralIntro = () => {
                 const maxDistance = 0.1; // 20% range divided by 2
 
                 // Calculate blur intensity
-                blur = 50 * (1 - distance / maxDistance); // Max 30px blur
+                blur =
+                  window.innerWidth < 768
+                    ? 20 * (1 - distance / maxDistance)
+                    : 50 * (1 - distance / maxDistance); // Max 20px/50px blur based on screen size
               }
             }
 
