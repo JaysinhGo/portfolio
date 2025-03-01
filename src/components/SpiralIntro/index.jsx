@@ -72,8 +72,8 @@ const SpiralIntro = () => {
       visibility: gsap.timeline({
         scrollTrigger: {
           trigger: scrollContainerRef.current,
-          start: "top top",
-          end: "100% bottom",
+          start: "top bottom",
+          end: "bottom top",
           onUpdate: (self) => {
             const isVisible = self.progress > 0 && self.progress < 1;
             gsap.set(groupRef.current, {
@@ -316,43 +316,25 @@ const SpiralIntro = () => {
         </svg>
         <div
           ref={textContainerRef}
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none opacity-0"
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none opacity-0 w-full px-4"
         >
           <div
             ref={nameRef}
-            className={`
-              text-[6vw] 
-              md:text-[64px] 
-              max-[480px]:text-[8vw] 
-              font-bold 
-              text-white 
-              mb-[2vw] 
-              md:mb-5 
-              max-[480px]:mb-[2vh] 
-              origin-center 
-              whitespace-nowrap 
-              transition-[filter,text-shadow] 
-              duration-300
-            `
-              .replace(/\s+/g, " ")
-              .trim()}
+            className="text-[8vw] sm:text-[6vw] md:text-[5vw] lg:text-[64px] 
+                       landscape:text-[5vh] landscape:md:text-[6vh]
+                       font-bold text-white 
+                       mb-[2vh] sm:mb-[2vw] md:mb-5 
+                       origin-center whitespace-nowrap 
+                       transition-[filter,text-shadow] duration-300"
           >
             Jaysinh Gohil
           </div>
           <div
             ref={titleRef}
-            className={`
-              text-[3vw] 
-              md:text-[32px] 
-              max-[480px]:text-[4vw] 
-              text-white 
-              origin-center 
-              whitespace-nowrap 
-              transition-[filter,text-shadow] 
-              duration-300
-            `
-              .replace(/\s+/g, " ")
-              .trim()}
+            className="text-[4vw] sm:text-[3vw] md:text-[2.5vw] lg:text-[32px]
+                       landscape:text-[3vh] landscape:md:text-[4vh]
+                       text-white origin-center whitespace-nowrap 
+                       transition-[filter,text-shadow] duration-300"
           >
             Principal Frontend Engineer
           </div>

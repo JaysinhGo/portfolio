@@ -164,8 +164,8 @@ const PranaSphere = () => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
-        start: "-10% top", // Start slightly before element enters viewport
-        end: "90% bottom", // End slightly before element leaves viewport
+        start: "top bottom",
+        end: "bottom top",
         scrub: true, // Smooth scrubbing
         onUpdate: (self) => {
           const progress = self.progress;
@@ -315,8 +315,8 @@ const PranaSphere = () => {
     const textTl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
-        start: "-10% top",
-        end: "70% bottom",
+        start: "top bottom",
+        end: "90% bottom",
         scrub: true,
         onUpdate: (self) => {
           const progress = self.progress;
