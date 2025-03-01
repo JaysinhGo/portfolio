@@ -539,30 +539,32 @@ const PranaSphere = () => {
           </g>
         </svg>
 
-        {/* Text overlay with refs */}
-        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-[90vw] max-w-[1000px] z-10 p-8 [perspective:1000px]">
-          <div className="relative my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d]">
+        {/* Text overlay with improved mobile responsiveness */}
+        <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center w-[95vw] max-w-[1000px] z-10 p-4 sm:p-8 [perspective:1000px]">
+          {/* Text line container with improved spacing */}
+          <div className="relative my-2 sm:my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d]">
+            {/* Update text size classes for better mobile scaling */}
             <span
               ref={(el) => (textElements.current[0] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium text-white mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               I
             </span>
             <span
               ref={(el) => (textElements.current[1] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium text-white mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               enjoy
             </span>
             <span
               ref={(el) => (textElements.current[2] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium text-white mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               crafting
             </span>
             <span
               ref={(el) => (textElements.current[3] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               <span
                 ref={(el) => (highlightedText.current[3] = el)}
@@ -573,15 +575,15 @@ const PranaSphere = () => {
             </span>
             <span
               ref={(el) => (textElements.current[4] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium text-white mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               and
             </span>
           </div>
-          <div className="relative my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d]">
+          <div className="relative my-2 sm:my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d]">
             <span
               ref={(el) => (textElements.current[5] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               <span
                 ref={(el) => (highlightedText.current[5] = el)}
@@ -592,27 +594,27 @@ const PranaSphere = () => {
             </span>
             <span
               ref={(el) => (textElements.current[6] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium text-white mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               digital
             </span>
             <span
               ref={(el) => (textElements.current[7] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium text-white mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               experiences,
             </span>
           </div>
-          <div className="relative my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d]">
+          <div className="relative my-2 sm:my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d]">
             <span
               ref={(el) => (textElements.current[8] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium text-white mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               combining
             </span>
             <span
               ref={(el) => (textElements.current[9] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               <span
                 ref={(el) => (highlightedText.current[9] = el)}
@@ -623,15 +625,15 @@ const PranaSphere = () => {
             </span>
             <span
               ref={(el) => (textElements.current[10] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium text-white mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               with
             </span>
           </div>
-          <div className="relative my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d]">
+          <div className="relative my-2 sm:my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d]">
             <span
               ref={(el) => (textElements.current[11] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               <span
                 ref={(el) => (highlightedText.current[11] = el)}
@@ -642,7 +644,7 @@ const PranaSphere = () => {
             </span>
             <span
               ref={(el) => (textElements.current[12] = el)}
-              className="inline-block text-[clamp(1.8rem,3.5vw,2.5rem)] font-medium mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+              className="inline-block text-[clamp(1.2rem,4vw,2.5rem)] font-medium text-white mx-1 sm:mx-1.5 [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
             >
               <span
                 ref={(el) => (highlightedText.current[12] = el)}
