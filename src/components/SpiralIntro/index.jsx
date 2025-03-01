@@ -256,72 +256,71 @@ const SpiralIntro = () => {
   }, []);
 
   return (
-    <>
-      <div ref={scrollContainerRef} className="relative w-screen h-[1400vh]">
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
-          <svg
-            ref={svgRef}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="-100 -100 1000 1000"
-            style={{
-              width: "min(100vw, 100vh)",
-              height: "min(100vw, 100vh)",
-              maxWidth: "900px",
-              maxHeight: "900px",
-            }}
-            preserveAspectRatio="xMidYMid meet"
-            overflow="visible"
-          >
-            <defs>
-              <linearGradient
-                x1="50%"
-                y1="0%"
-                x2="50%"
-                y2="100%"
-                id="cccoil-grad"
-              >
-                <stop
-                  stopColor="hsl(206, 75%, 49%)"
-                  stopOpacity="1"
-                  offset="0%"
-                />
-                <stop
-                  stopColor="hsl(331, 90%, 56%)"
-                  stopOpacity="1"
-                  offset="100%"
-                />
-              </linearGradient>
-            </defs>
-            <g
-              ref={groupRef}
-              stroke="url(#cccoil-grad)"
-              fill="none"
-              strokeLinecap="round"
-              opacity={0.8}
+    <div ref={scrollContainerRef} className="relative w-screen h-[1400vh]">
+      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+        <svg
+          ref={svgRef}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="-100 -100 1000 1000"
+          style={{
+            width: "min(100vw, 100vh)",
+            height: "min(100vw, 100vh)",
+            maxWidth: "900px",
+            maxHeight: "900px",
+          }}
+          preserveAspectRatio="xMidYMid meet"
+          overflow="visible"
+        >
+          <defs>
+            <linearGradient
+              x1="50%"
+              y1="0%"
+              x2="50%"
+              y2="100%"
+              id="cccoil-grad"
             >
-              {radius.map((r, i) => (
-                <circle
-                  key={i}
-                  ref={(el) => (circles.current[i] = el)}
-                  r={r}
-                  cx="400"
-                  cy="400"
-                  strokeWidth="1"
-                  strokeDasharray={dashArrays[i]}
-                  transform={`rotate(${transforms[i]}, 400, 400)`}
-                  opacity="0"
-                  stroke={getRandomHSL()}
-                />
-              ))}
-            </g>
-          </svg>
-          <div
-            ref={textContainerRef}
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none opacity-0"
+              <stop
+                stopColor="hsl(206, 75%, 49%)"
+                stopOpacity="1"
+                offset="0%"
+              />
+              <stop
+                stopColor="hsl(331, 90%, 56%)"
+                stopOpacity="1"
+                offset="100%"
+              />
+            </linearGradient>
+          </defs>
+          <g
+            ref={groupRef}
+            stroke="url(#cccoil-grad)"
+            fill="none"
+            strokeLinecap="round"
+            opacity={0.8}
           >
-            <div
-              ref={nameRef}
-              className={`
+            {radius.map((r, i) => (
+              <circle
+                key={i}
+                ref={(el) => (circles.current[i] = el)}
+                r={r}
+                cx="400"
+                cy="400"
+                strokeWidth="1"
+                strokeDasharray={dashArrays[i]}
+                transform={`rotate(${transforms[i]}, 400, 400)`}
+                opacity="0"
+                stroke={getRandomHSL()}
+              />
+            ))}
+          </g>
+        </svg>
+        <div
+          ref={textContainerRef}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none opacity-0"
+        >
+          <div
+            ref={nameRef}
+            className={`
               text-[6vw] 
               md:text-[64px] 
               max-[480px]:text-[8vw] 
@@ -335,14 +334,14 @@ const SpiralIntro = () => {
               transition-[filter,text-shadow] 
               duration-300
             `
-                .replace(/\s+/g, " ")
-                .trim()}
-            >
-              Jaysinh Gohil
-            </div>
-            <div
-              ref={titleRef}
-              className={`
+              .replace(/\s+/g, " ")
+              .trim()}
+          >
+            Jaysinh Gohil
+          </div>
+          <div
+            ref={titleRef}
+            className={`
               text-[3vw] 
               md:text-[32px] 
               max-[480px]:text-[4vw] 
@@ -352,18 +351,14 @@ const SpiralIntro = () => {
               transition-[filter,text-shadow] 
               duration-300
             `
-                .replace(/\s+/g, " ")
-                .trim()}
-            >
-              Principal Frontend Engineer
-            </div>
+              .replace(/\s+/g, " ")
+              .trim()}
+          >
+            Principal Frontend Engineer
           </div>
         </div>
       </div>
-      <div className="h-[200vh]">
-        {/* temporary hight emement do not remove */}
-      </div>
-    </>
+    </div>
   );
 };
 
