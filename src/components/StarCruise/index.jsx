@@ -12,13 +12,13 @@ const StarCruise = () => {
   const spaceShipFireRef = useRef(null);
 
   // Simpler random color generator
-  const getRandomHSL = () =>
-    `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`;
+  const getRandomHSL = () => {
+    const h = Math.random() * 360;
+    return `hsl(${h}, 100%, 50%)`;
+  };
 
   useGSAP(() => {
     let frame;
-    let isScrolling = false;
-    let scrollTimeout;
     let lastDirection = 1;
 
     gsap.set(spaceShipRef.current, {
@@ -28,15 +28,10 @@ const StarCruise = () => {
       opacity: 0,
     });
 
-    gsap.set(spaceShipFireRef.current, {
-      fill: "hsl(45, 100%, 55%)",
-      opacity: 0,
-    });
-
     const handleScroll = (progress, direction) => {
       if (direction !== lastDirection) {
         gsap.to(spaceShipRef.current, {
-          duration: 0.2,
+          duration: 0.1,
           rotation: direction === -1 ? 270 : 90,
           ease: "power1.out",
           overwrite: "auto",
@@ -70,13 +65,6 @@ const StarCruise = () => {
           ease: "none",
         });
       }
-
-      gsap.to(spaceShipFireRef.current, {
-        duration: 0.02,
-        opacity: isScrolling ? 0.8 : 0,
-        fill: getRandomHSL(),
-        overwrite: true,
-      });
     };
 
     gsap.timeline({
@@ -87,24 +75,13 @@ const StarCruise = () => {
         scrub: 0.1,
         onUpdate: (self) => {
           if (frame) cancelAnimationFrame(frame);
-          if (scrollTimeout) clearTimeout(scrollTimeout);
 
-          isScrolling = true;
           frame = requestAnimationFrame(() =>
             handleScroll(self.progress, self.direction)
           );
-
-          scrollTimeout = setTimeout(() => {
-            isScrolling = false;
-            gsap.to(spaceShipFireRef.current, {
-              duration: 0.1,
-              opacity: 0,
-              overwrite: true,
-            });
-          }, 30);
         },
         onLeave: () => {
-          gsap.to([spaceShipRef.current, spaceShipFireRef.current], {
+          gsap.to([spaceShipRef.current], {
             duration: 0.2,
             opacity: 0,
             overwrite: true,
@@ -123,16 +100,79 @@ const StarCruise = () => {
       },
     });
 
+    let colorChangeInterval;
+    let lastScrollTime = Date.now();
+    let checkScrollTimeout;
+
+    // Function to check if scrolling has stopped
+    const checkScrolling = () => {
+      const currentTime = Date.now();
+      if (currentTime - lastScrollTime > 50) {
+        // No scroll for 50ms - hide fire
+        gsap.to(spaceShipFireRef.current, {
+          opacity: 0,
+          duration: 0.1,
+          overwrite: true,
+        });
+        clearInterval(colorChangeInterval);
+      } else {
+        // Keep checking
+        checkScrollTimeout = requestAnimationFrame(checkScrolling);
+      }
+    };
+
+    ScrollTrigger.create({
+      trigger: scrollContainerRef.current,
+      start: "top top",
+      end: "bottom bottom",
+      onUpdate: () => {
+        // Update last scroll time
+        lastScrollTime = Date.now();
+
+        // Clear existing checks
+        cancelAnimationFrame(checkScrollTimeout);
+        clearInterval(colorChangeInterval);
+
+        // Show fire and start color changes
+        gsap.to(spaceShipFireRef.current, {
+          opacity: 1,
+          duration: 0.05,
+          overwrite: true,
+        });
+
+        // Super fast color changes
+        const changeColor = () => {
+          gsap.set(spaceShipFireRef.current, {
+            fill: getRandomHSL(),
+          });
+        };
+
+        // Change color every 16ms
+        changeColor();
+        colorChangeInterval = setInterval(changeColor, 16);
+
+        // Start checking for scroll stop
+        checkScrollTimeout = requestAnimationFrame(checkScrolling);
+      },
+    });
+
+    // Initial state
+    gsap.set(spaceShipFireRef.current, {
+      opacity: 0,
+    });
+
+    // Cleanup
     return () => {
-      if (frame) cancelAnimationFrame(frame);
-      if (scrollTimeout) clearTimeout(scrollTimeout);
+      clearInterval(colorChangeInterval);
+      cancelAnimationFrame(checkScrollTimeout);
+      ScrollTrigger.getAll().forEach((st) => st.kill());
     };
   }, []);
 
   return (
     <div ref={scrollContainerRef} className="relative w-screen">
       <GalacticRide />
-      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+      <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-1">
         <svg
           ref={spaceShipRef}
           className="w-[30px] sm:w-[40px] md:w-[50px] scale-0 origin-center"
