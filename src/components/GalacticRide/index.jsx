@@ -7,7 +7,6 @@ gsap.registerPlugin(ScrollTrigger);
 const GalacticRide = () => {
   return (
     <>
-      <div className="relative w-screen h-screen"></div>
       <NebulaNest />
     </>
   );
