@@ -93,6 +93,7 @@ const StarCruise = () => {
         start: "top bottom",
         end: "bottom top",
         scrub: 0.1,
+        markers: true,
         onUpdate: (self) => {
           if (frame) cancelAnimationFrame(frame);
 

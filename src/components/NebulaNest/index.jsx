@@ -48,6 +48,7 @@ const NebulaNest = () => {
           start: "top bottom",
           end: "bottom bottom",
           scrub: 1,
+          markers: true,
           onLeave: () => gsap.set(statue, initialState),
           onEnterBack: () => {
             gsap.to(statue, {
