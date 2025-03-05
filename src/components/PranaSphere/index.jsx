@@ -145,6 +145,7 @@ const PranaSphere = () => {
 
   // Set up main scroll-based animation
   useGSAP(() => {
+    // Initial hide function
     const hideAll = () => {
       gsap.set(svgRef.current, { opacity: 0 });
       Object.values(circleGroups).forEach((group) =>
@@ -158,6 +159,7 @@ const PranaSphere = () => {
       );
     };
 
+    // Set initial state
     hideAll();
 
     // ScrollTrigger animation timeline
@@ -166,11 +168,17 @@ const PranaSphere = () => {
         trigger: containerRef.current,
         start: "top bottom",
         end: "bottom top",
-        scrub: true, // Smooth scrubbing
+        scrub: true,
         onUpdate: (self) => {
           const progress = self.progress;
 
-          // Fade out component near the end
+          // Force hide state when scrolled above start point
+          if (progress <= 0) {
+            hideAll();
+            return;
+          }
+
+          // Rest of your existing animation code...
           const componentOpacity = gsap.utils.clamp(
             0,
             1,
@@ -291,6 +299,11 @@ const PranaSphere = () => {
               );
             });
           });
+        },
+        onLeave: hideAll, // Hide when scrolled past
+        onEnterBack: () => {
+          // Ensure visibility when scrolling back
+          gsap.set(svgRef.current, { opacity: 1 });
         },
       },
     });

@@ -90,10 +90,9 @@ const StarCruise = () => {
     gsap.timeline({
       scrollTrigger: {
         trigger: scrollContainerRef.current,
-        start: "top top",
-        end: "bottom bottom",
+        start: "top bottom",
+        end: "bottom top",
         scrub: 0.1,
-        markers: true,
         onUpdate: (self) => {
           if (frame) cancelAnimationFrame(frame);
 
@@ -144,8 +143,8 @@ const StarCruise = () => {
 
     ScrollTrigger.create({
       trigger: scrollContainerRef.current,
-      start: "top top",
-      end: "bottom bottom",
+      start: "top bottom",
+      end: "bottom top",
       onUpdate: () => {
         // Update last scroll time
         lastScrollTime = Date.now();
