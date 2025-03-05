@@ -18,13 +18,33 @@ const StarCruise = () => {
   };
 
   useGSAP(() => {
+    // Visibility animation
+    ScrollTrigger.create({
+      trigger: scrollContainerRef.current,
+      start: "top top",
+      end: "bottom bottom",
+      toggleActions: "play reverse play reverse",
+      onToggle: ({ isActive }) => {
+        gsap.to(spaceShipRef.current, {
+          opacity: isActive ? 1 : 0,
+          duration: 0.3,
+        });
+      },
+    });
+
     let frame;
+    let isScrolling = false;
+    let scrollTimeout;
     let lastDirection = 1;
 
     gsap.set(spaceShipRef.current, {
       rotation: 90,
       x: -window.innerWidth,
       scale: 0,
+    });
+
+    gsap.set(spaceShipFireRef.current, {
+      fill: "hsl(45, 100%, 55%)",
       opacity: 0,
     });
 
@@ -73,6 +93,7 @@ const StarCruise = () => {
         start: "top top",
         end: "bottom bottom",
         scrub: 0.1,
+        markers: true,
         onUpdate: (self) => {
           if (frame) cancelAnimationFrame(frame);
 
@@ -154,11 +175,6 @@ const StarCruise = () => {
         // Start checking for scroll stop
         checkScrollTimeout = requestAnimationFrame(checkScrolling);
       },
-    });
-
-    // Initial state
-    gsap.set(spaceShipFireRef.current, {
-      opacity: 0,
     });
 
     // Cleanup
