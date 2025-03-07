@@ -386,7 +386,7 @@ const NebulaNest = () => {
   );
 
   return (
-    <div ref={containerRef} className="relative w-screen h-[800vh]">
+    <div ref={containerRef} className="relative w-screen h-[1000vh]">
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
         <svg
           ref={statueofunityRef}
