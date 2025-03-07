@@ -5,6 +5,22 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const TEXT_ANIMATION_CONFIG = {
+  lines: [
+    { start: 0.2, peak: 0.35, end: 0.7 },
+    { start: 0.3, peak: 0.45, end: 0.8 },
+    { start: 0.4, peak: 0.55, end: 0.9 },
+  ],
+};
+
+const createGradientStyle = (progress) => {
+  const hue = (progress * 720) % 360;
+  return `linear-gradient(${progress * 720}deg, 
+    hsl(${hue}, 100%, 50%) 0%, 
+    hsl(${(hue + 120) % 360}, 100%, 50%) 50%, 
+    hsl(${(hue + 240) % 360}, 100%, 50%) 100%)`;
+};
+
 const NebulaNest = () => {
   const containerRef = useRef(null);
   const statueofunityRef = useRef(null);
@@ -13,9 +29,8 @@ const NebulaNest = () => {
   const innerRuneRef = useRef(null);
   const outerRuneRef = useRef(null);
   const glowingRimRef = useRef(null);
-  const messageWrapperRef = useRef(null);
-  const messageRef = useRef(null);
-  const wordRefs = useRef([]);
+  const textElements = useRef([]);
+  const highlightedText = useRef([]);
 
   useGSAP(
     () => {
@@ -47,13 +62,20 @@ const NebulaNest = () => {
           trigger: containerRef.current,
           start: "top bottom",
           end: "bottom bottom",
-          scrub: 1,
-          onLeave: () => gsap.set(statue, initialState),
+          scrub: 0.5,
+          onLeave: () => {
+            gsap.to(statue, {
+              opacity: 0,
+              scale: 0,
+              duration: 0.3,
+              ease: "power2.in",
+            });
+          },
           onEnterBack: () => {
             gsap.to(statue, {
               opacity: 1,
               scale: 1,
-              duration: 0.5,
+              duration: 0.3,
               ease: "power2.out",
             });
           },
@@ -64,15 +86,15 @@ const NebulaNest = () => {
       tl.to(statue, {
         opacity: 1,
         scale: 1,
-        duration: 1,
-        ease: "power4.inOut",
+        duration: 0.5,
+        ease: "power2.out",
       })
         .fromTo(
           paths,
           {
             opacity: 0,
             scale: 0,
-            y: 100,
+            y: 50,
             filter: "blur(20px) brightness(0)",
           },
           {
@@ -80,36 +102,38 @@ const NebulaNest = () => {
             scale: 1,
             y: 0,
             filter: "blur(0px) brightness(1.2)",
-            duration: 2,
+            duration: 1,
             stagger: {
-              amount: 1.5,
+              amount: 0.8,
               from: "center",
-              ease: "power4.out",
+              ease: "power2.out",
             },
           },
-          "-=0.5"
+          "-=0.3"
         )
         // Power surge effect
         .to(paths, {
-          scale: 1.1,
-          filter: "blur(0px) brightness(2)",
-          duration: 0.5,
+          scale: 1.05,
+          filter: "blur(0px) brightness(1.5)",
+          duration: 0.3,
           stagger: {
-            amount: 0.8,
+            amount: 0.4,
             from: "center",
           },
         })
         .to(paths, {
           scale: 1,
           filter: "blur(0px) brightness(1.2)",
-          duration: 0.5,
+          duration: 0.3,
           stagger: {
-            amount: 0.3,
+            amount: 0.2,
             from: "center",
           },
         });
 
-      return () => ScrollTrigger.getAll().forEach((t) => t.kill());
+      return () => {
+        ScrollTrigger.getAll().forEach((t) => t.kill());
+      };
     },
     { scope: containerRef }
   );
@@ -252,145 +276,130 @@ const NebulaNest = () => {
     { scope: containerRef }
   );
 
-  useGSAP(
-    () => {
-      if (messageWrapperRef.current) {
-        const wrapper = messageWrapperRef.current;
-        const words = wordRefs.current;
+  useGSAP(() => {
+    const words = textElements.current;
+    const highlighted = highlightedText.current;
 
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top bottom",
-            end: "bottom bottom",
-            scrub: 1,
-            onUpdate: (self) => {
-              const progress = self.progress;
+    gsap.set(words, {
+      opacity: 0,
+      y: 100,
+      rotationX: -90,
+      scale: 0.8,
+      transformOrigin: "center center",
+    });
 
-              if (progress >= 0.1 && progress <= 0.9) {
-                const showProgress = gsap.utils.clamp(
-                  0,
-                  1,
-                  gsap.utils.normalize(0.1, 0.5, progress)
-                );
-                const hideProgress = gsap.utils.clamp(
-                  0,
-                  1,
-                  gsap.utils.normalize(0.5, 0.9, progress)
-                );
-
-                gsap.to(wrapper, {
-                  opacity: 1,
-                  duration: 0.2,
-                  immediateRender: true,
-                });
-
-                words.forEach((word, index) => {
-                  const delay = index * 0.03;
-                  const wordShowProgress = Math.min(
-                    1,
-                    Math.max(0, (showProgress - delay) * 1.5)
-                  );
-                  const wordHideProgress = hideProgress;
-
-                  if (wordShowProgress < 1) {
-                    const angle = (index / words.length) * Math.PI * 2;
-                    const distance = 300 * (1 - wordShowProgress);
-
-                    gsap.to(word, {
-                      opacity: Math.min(1, wordShowProgress * 2),
-                      scale: wordShowProgress,
-                      x: Math.cos(angle) * distance,
-                      y:
-                        Math.sin(angle) * distance +
-                        (1 - wordShowProgress) * 200,
-                      z: (1 - wordShowProgress) * -500,
-                      rotationX: 0,
-                      rotationY: (1 - wordShowProgress) * 180,
-                      filter: `blur(${
-                        (1 - wordShowProgress) * 10
-                      }px) brightness(${1 + wordShowProgress})`,
-                      duration: 0.2,
-                      ease: "power2.out",
-                      immediateRender: true,
-                    });
-                  } else if (hideProgress > 0) {
-                    const angle = (index / words.length) * Math.PI * 2;
-                    gsap.to(word, {
-                      opacity: 1 - hideProgress * 1.5,
-                      scale: 1 - hideProgress * 0.5,
-                      x: Math.cos(angle) * (hideProgress * 200),
-                      y: Math.sin(angle) * (hideProgress * 200),
-                      z: hideProgress * -300,
-                      rotationY: hideProgress * 90,
-                      filter: `blur(${hideProgress * 5}px) brightness(${
-                        2 - hideProgress
-                      })`,
-                      duration: 0.3,
-                      ease: "power2.inOut",
-                    });
-                  } else {
-                    gsap.to(word, {
-                      opacity: 1,
-                      scale: 1,
-                      x: 0,
-                      y: 0,
-                      z: 0,
-                      rotationX: 0,
-                      rotationY: 0,
-                      filter: "blur(0px) brightness(1)",
-                      duration: 0.3,
-                      ease: "power2.out",
-                      onComplete: () => {
-                        gsap.to(word, {
-                          y: `+=${Math.random() * 15 - 7.5}`,
-                          x: `+=${Math.random() * 15 - 7.5}`,
-                          rotationY: `+=${Math.random() * 10 - 5}`,
-                          filter: `brightness(${1 + Math.random() * 0.2})`,
-                          duration: 2 + Math.random(),
-                          repeat: -1,
-                          yoyo: true,
-                          ease: "sine.inOut",
-                        });
-                      },
-                    });
-                  }
-                });
-              } else {
-                gsap.to(wrapper, {
-                  opacity: 0,
-                  duration: 0.2,
-                });
-
-                words.forEach((word, index) => {
-                  const angle = (index / words.length) * Math.PI * 2;
-                  gsap.to(word, {
-                    opacity: 0,
-                    scale: 0.5,
-                    x: Math.cos(angle) * 200,
-                    y: Math.sin(angle) * 200 + 100,
-                    z: -300,
-                    rotationY: 90,
-                    filter: "blur(10px) brightness(0)",
-                    duration: 0.3,
-                    ease: "power3.in",
-                  });
-                });
-              }
+    const textTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top bottom",
+        end: "90% bottom",
+        scrub: 0.3,
+        onLeave: () => {
+          gsap.to(words, {
+            opacity: 0,
+            y: -50,
+            rotationX: 90,
+            scale: 0.8,
+            duration: 0.3,
+            stagger: {
+              amount: 0.2,
+              from: "start",
             },
-          },
-        });
-      }
-    },
-    { scope: containerRef }
-  );
+            ease: "power2.in",
+          });
+        },
+        onEnterBack: () => {
+          gsap.to(words, {
+            opacity: 1,
+            y: 0,
+            rotationX: 0,
+            scale: 1,
+            duration: 0.3,
+            stagger: {
+              amount: 0.2,
+              from: "end",
+            },
+            ease: "power2.out",
+          });
+        },
+        onUpdate: (self) => {
+          const progress = self.progress;
+
+          words.forEach((word, i) => {
+            const lineIndex = Math.floor(i / 5);
+            const wordInLineIndex = i % 5;
+            const line = TEXT_ANIMATION_CONFIG.lines[lineIndex];
+
+            if (!line) return;
+
+            const wordDelay = wordInLineIndex * 0.04;
+            const wordStart = line.start + wordDelay;
+            const wordPeak = line.peak + wordDelay;
+            const wordEnd = line.end + wordDelay;
+
+            let opacity = 0;
+            let y = 100;
+            let rotationX = -90;
+            let scale = 0.8;
+
+            if (progress < wordStart) {
+              opacity = 0;
+              y = 100;
+              rotationX = -90;
+              scale = 0.8;
+            } else if (progress < wordPeak) {
+              const entryProgress =
+                (progress - wordStart) / (wordPeak - wordStart);
+              const easeProgress = gsap.parseEase("power2.out")(entryProgress);
+              opacity = easeProgress;
+              y = 100 * (1 - easeProgress);
+              rotationX = -90 * (1 - easeProgress);
+              scale = 0.8 + 0.2 * easeProgress;
+            } else if (progress < wordEnd) {
+              opacity = 1;
+              y = 0;
+              rotationX = 0;
+              scale = 1;
+            } else {
+              const exitProgress = (progress - wordEnd) / 0.1;
+              const easeExitProgress =
+                gsap.parseEase("power2.in")(exitProgress);
+              opacity = Math.max(0, 1 - easeExitProgress);
+              y = -50 * easeExitProgress;
+              rotationX = 90 * easeExitProgress;
+              scale = 1 - 0.2 * easeExitProgress;
+            }
+
+            gsap.to(word, {
+              opacity,
+              y,
+              rotationX,
+              scale,
+              duration: 0.2,
+              ease: "power2.inOut",
+            });
+
+            if (highlighted[i]) {
+              gsap.to(highlighted[i], {
+                backgroundImage: createGradientStyle(progress * 2),
+                duration: 0.1,
+                ease: "none",
+              });
+            }
+          });
+        },
+      },
+    });
+
+    return () => textTl.kill();
+  }, []);
 
   return (
-    <div ref={containerRef} className="relative w-screen h-[1000vh]">
+    <div ref={containerRef} className="relative w-screen h-[1400vh]">
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
         <svg
           ref={statueofunityRef}
-          className="w-[70vw] h-[70vh] md:w-[70vw] md:h-[70vh] sm:w-[85vw] sm:h-[85vh] xs:w-[90vw] xs:h-[90vh] object-contain opacity-0 scale-0"
+          className="w-screen h-screen sm:h-[90vh] md:w-[70vw] lg:h-[60vh] object-contain opacity-0 scale-0"
           xmlns="http://www.w3.org/2000/svg"
           version="1.1"
           viewBox="0 0 980 980"
@@ -640,85 +649,119 @@ const NebulaNest = () => {
       </div>
 
       {/* Message section with dynamic height */}
-      <div
-        ref={messageWrapperRef}
-        className="fixed w-full h-[25vh] bottom-0 text-center opacity-0 flex items-center justify-center [perspective:1000px] [transform-style:preserve-3d] font-space-grotesk"
-      >
-        <div
-          ref={messageRef}
-          className="w-full flex items-center justify-center flex-wrap gap-[0.5rem_0.4rem] md:gap-[0.8rem_0.6rem] [transform-style:preserve-3d] p-4 md:p-8"
-        >
+      <div className="fixed bottom-[5vh] left-1/2 -translate-x-1/2 text-center w-[95vw] max-w-[1000px] z-10 p-4 sm:p-8 [perspective:1000px]">
+        {/* First line */}
+        <div className="relative my-2 sm:my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d] flex justify-center">
           <span
-            ref={(el) => (wordRefs.current[0] = el)}
-            data-text="The"
-            className="inline-block font-medium origin-center opacity-0 scale-[0.8] text-[1rem] sm:text-[1.4rem] md:text-[1.8rem] lg:text-[2rem] text-white shadow-glow translate-z-[-100px] backface-hidden will-change-transform leading-[1.5]"
+            ref={(el) => (textElements.current[0] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
           >
             The
           </span>
+          <span className="mx-1 sm:mx-2"></span>
           <span
-            ref={(el) => (wordRefs.current[1] = el)}
-            data-text="Statue"
-            className="inline-block font-medium origin-center opacity-0 scale-[0.8] text-[1rem] sm:text-[1.4rem] md:text-[1.8rem] lg:text-[2rem] translate-z-[-100px] backface-hidden will-change-transform leading-[1.5]"
+            ref={(el) => (textElements.current[1] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
           >
-            Statue
+            <span
+              ref={(el) => (highlightedText.current[1] = el)}
+              className="inline-block bg-clip-text [-webkit-background-clip:text] text-transparent [will-change:background]"
+            >
+              Statue
+            </span>
+          </span>
+          <span className="mx-1 sm:mx-2"></span>
+          <span
+            ref={(el) => (textElements.current[2] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            <span
+              ref={(el) => (highlightedText.current[2] = el)}
+              className="inline-block bg-clip-text [-webkit-background-clip:text] text-transparent [will-change:background]"
+            >
+              of
+            </span>
+          </span>
+          <span className="mx-1 sm:mx-2"></span>
+          <span
+            ref={(el) => (textElements.current[3] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            <span
+              ref={(el) => (highlightedText.current[3] = el)}
+              className="inline-block bg-clip-text [-webkit-background-clip:text] text-transparent [will-change:background]"
+            >
+              Unity
+            </span>
           </span>
           <span
-            ref={(el) => (wordRefs.current[2] = el)}
-            data-text="of"
-            className="inline-block font-medium origin-center opacity-0 scale-[0.8] text-[1rem] sm:text-[1.4rem] md:text-[1.8rem] lg:text-[2rem] text-[#ffd700] shadow-golden translate-z-[-100px] backface-hidden will-change-transform leading-[1.5]"
+            ref={(el) => (textElements.current[4] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
           >
-            of
+            ,
           </span>
-          <span
-            ref={(el) => (wordRefs.current[3] = el)}
-            data-text="Unity,"
-            className="inline-block font-medium origin-center opacity-0 scale-[0.8] text-[1rem] sm:text-[1.4rem] md:text-[1.8rem] lg:text-[2rem] text-[#ffd700] shadow-golden translate-z-[-100px] backface-hidden will-change-transform leading-[1.5]"
-          >
-            Unity,
-          </span>
-          <span
-            ref={(el) => (wordRefs.current[4] = el)}
-            data-text="a"
-            className="inline-block font-medium origin-center opacity-0 scale-[0.8] text-[1rem] sm:text-[1.4rem] md:text-[1.8rem] lg:text-[2rem] text-white shadow-glow translate-z-[-100px] backface-hidden will-change-transform leading-[1.5]"
-          >
-            a
-          </span>
-          <span
-            ref={(el) => (wordRefs.current[5] = el)}
-            data-text="remarkable"
-            className="inline-block font-medium origin-center opacity-0 scale-[0.8] text-[1rem] sm:text-[1.4rem] md:text-[1.8rem] lg:text-[2rem] text-white shadow-glow translate-z-[-100px] backface-hidden will-change-transform leading-[1.5]"
-          >
-            remarkable
-          </span>
-          <span
-            ref={(el) => (wordRefs.current[6] = el)}
-            data-text="landmark,"
-            className="inline-block font-medium origin-center opacity-0 scale-[0.8] text-[1rem] sm:text-[1.4rem] md:text-[1.8rem] lg:text-[2rem] text-white shadow-glow translate-z-[-100px] backface-hidden will-change-transform leading-[1.5]"
-          >
-            landmark,
-          </span>
-          <br className="w-full" />
-          <span
-            ref={(el) => (wordRefs.current[7] = el)}
-            data-text="represents"
-            className="inline-block font-medium origin-center opacity-0 scale-[0.8] text-[1rem] sm:text-[1.4rem] md:text-[1.8rem] lg:text-[2rem] text-white shadow-glow translate-z-[-100px] backface-hidden will-change-transform leading-[1.5]"
-          >
-            represents
-          </span>
-          <span
-            ref={(el) => (wordRefs.current[8] = el)}
-            data-text="my"
-            className="inline-block font-medium origin-center opacity-0 scale-[0.8] text-[1rem] sm:text-[1.4rem] md:text-[1.8rem] lg:text-[2rem] text-white shadow-glow translate-z-[-100px] backface-hidden will-change-transform leading-[1.5]"
-          >
-            my
-          </span>
-          <span
-            ref={(el) => (wordRefs.current[9] = el)}
-            data-text="Hometown"
-            className="inline-block font-medium origin-center opacity-0 scale-[0.8] text-[1rem] sm:text-[1.4rem] md:text-[1.8rem] lg:text-[2rem] text-[#ffd700] shadow-golden translate-z-[-100px] backface-hidden will-change-transform leading-[1.5]"
-          >
-            Hometown
-          </span>
+        </div>
+
+        {/* Second and third lines */}
+        <div className="flex flex-col md:flex-row items-center justify-center gap-2 sm:gap-4">
+          {/* "a remarkable landmark" */}
+          <div className="relative min-h-[1.5em] overflow-visible [transform-style:preserve-3d] flex justify-center">
+            <span
+              ref={(el) => (textElements.current[5] = el)}
+              className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+            >
+              a
+            </span>
+            <span className="mx-1 sm:mx-2"></span>
+            <span
+              ref={(el) => (textElements.current[6] = el)}
+              className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+            >
+              remarkable
+            </span>
+            <span className="mx-1 sm:mx-2"></span>
+            <span
+              ref={(el) => (textElements.current[7] = el)}
+              className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+            >
+              landmark
+            </span>
+            <span
+              ref={(el) => (textElements.current[8] = el)}
+              className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+            >
+              ,
+            </span>
+          </div>
+
+          {/* "represents my Hometown" */}
+          <div className="relative min-h-[1.5em] overflow-visible [transform-style:preserve-3d] flex justify-center">
+            <span
+              ref={(el) => (textElements.current[9] = el)}
+              className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+            >
+              represents
+            </span>
+            <span className="mx-1 sm:mx-2"></span>
+            <span
+              ref={(el) => (textElements.current[10] = el)}
+              className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+            >
+              my
+            </span>
+            <span className="mx-1 sm:mx-2"></span>
+            <span
+              ref={(el) => (textElements.current[11] = el)}
+              className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+            >
+              <span
+                ref={(el) => (highlightedText.current[11] = el)}
+                className="inline-block bg-clip-text [-webkit-background-clip:text] text-transparent [will-change:background]"
+              >
+                Hometown
+              </span>
+            </span>
+          </div>
         </div>
       </div>
     </div>

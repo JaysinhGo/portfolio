@@ -86,3 +86,15 @@
     will-change: transform, opacity;
   }
 }
+
+/* Target mobile devices specifically */
+@media screen and (orientation: landscape) and (max-device-width: 900px) and (max-device-height: 500px) {
+  body {
+    overflow: hidden;
+  }
+}
+
+/* Optional: Add smooth transitions when rotating */
+.fixed {
+  transition: opacity 0.3s ease;
+}

@@ -338,7 +338,7 @@ const Gravikick = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-screen h-[1000vh]">
+    <div ref={containerRef} className="relative w-screen h-[1400vh]">
       <div className="fixed left-1/2 top-0 h-[95vh] w-screen -translate-x-1/2 w-[100vw] sm:w-[90vw] md:w-[100vw] lg:w-[100vw]">
         <svg
           xmlns="http://www.w3.org/2000/svg"
