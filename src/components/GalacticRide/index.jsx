@@ -1,13 +1,13 @@
 import React from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import NebulaNest from "../NebulaNest";
-gsap.registerPlugin(ScrollTrigger);
-
+import Gravikick from "../Gravikick";
+import InProgress from "../InProgress";
 const GalacticRide = () => {
   return (
     <>
       <NebulaNest />
+      <Gravikick />
+      <InProgress />
     </>
   );
 };

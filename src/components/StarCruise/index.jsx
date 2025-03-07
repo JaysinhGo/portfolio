@@ -187,7 +187,7 @@ const StarCruise = () => {
       <div ref={scrollContainerRef} className="relative w-screen">
         <div className="relative w-screen h-screen"></div>
         <GalacticRide />
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-1">
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
           <svg
             ref={spaceShipRef}
             className="w-[30px] sm:w-[40px] md:w-[50px] scale-0 origin-center"
