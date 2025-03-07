@@ -185,9 +185,9 @@ const StarCruise = () => {
   return (
     <>
       <div ref={scrollContainerRef} className="relative w-screen">
-        <div className="relative w-screen h-screen"></div>
+        <div className="relative w-screen h-[100vh]"></div>
         <GalacticRide />
-        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+        <div className="fixed top-0 left-0 w-full h-full flex items-start justify-center">
           <svg
             ref={spaceShipRef}
             className="w-[30px] sm:w-[40px] md:w-[50px] scale-0 origin-center"
@@ -211,7 +211,7 @@ const StarCruise = () => {
           </svg>
         </div>
       </div>
-      <div className="relative w-screen h-screen"></div>
+      <div className="relative w-screen h-[100vh]"></div>
     </>
   );
 };

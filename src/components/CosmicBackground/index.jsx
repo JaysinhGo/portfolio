@@ -8,7 +8,7 @@ function CosmicBackground() {
       ></div>
       <div className={`${twinkling} fixed inset-0 w-full h-full block`}></div>
       <div
-        className={`${clouds} fixed inset-0 w-full h-full block opacity-[0.33]`}
+        className={`${clouds} fixed inset-0 w-full h-full block opacity-[0.4]`}
       ></div>
     </div>
   );

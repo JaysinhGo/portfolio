@@ -1,29 +1,31 @@
 @import "tailwindcss";
 
-@theme {
+/* Define CSS Variables and Animations */
+:root {
   --animate-twinkle: move-twink-back 200s linear infinite;
-  --animate-clouds: move-clouds-back 1000s linear infinite;
-
+  --animate-clouds: move-clouds-back 700s linear infinite;
   --scroll-indicator-fill: #f06;
+}
 
-  @keyframes move-twink-back {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: -10000px 5000px;
-    }
+@keyframes move-twink-back {
+  from {
+    background-position: 0 0;
   }
-
-  @keyframes move-clouds-back {
-    from {
-      background-position: 0 0;
-    }
-    to {
-      background-position: -10000px 0;
-    }
+  to {
+    background-position: -10000px 5000px;
   }
 }
+
+@keyframes move-clouds-back {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: -10000px 0;
+  }
+}
+
+/* Base Styles */
 @layer base {
   * {
     @apply m-0 p-0;
@@ -39,8 +41,13 @@
   body::-webkit-scrollbar {
     display: none; /* Hides scrollbar for Chrome/Safari */
   }
+
+  .font-space-grotesk {
+    font-family: "Space Grotesk", sans-serif;
+  }
 }
 
+/* Background Layers */
 .stars {
   background: #000 url(./assets/stars.png) repeat top center;
 }
@@ -53,4 +60,29 @@
 .clouds {
   background: transparent url(./assets/clouds3.png) repeat top center;
   animation: var(--animate-clouds);
+}
+
+/* Custom Utility Classes */
+@layer utilities {
+  .shadow-glow {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8),
+      0 0 20px rgba(255, 255, 255, 0.4);
+  }
+
+  .shadow-golden {
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8),
+      0 0 20px rgba(255, 215, 0, 0.4);
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .translate-z-\[-100px\] {
+    transform: translateZ(-100px);
+  }
+
+  .will-change-transform {
+    will-change: transform, opacity;
+  }
 }

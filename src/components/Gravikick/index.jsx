@@ -173,43 +173,41 @@ const Gravikick = () => {
         });
       });
     // Animate each line in soccer_extra-line
-    gsap.utils
-      .toArray(extraLineRef.current.querySelectorAll("*"))
-      .forEach((line, index) => {
-        if (typeof line.getTotalLength === "function") {
-          const length = line.getTotalLength();
-          gsap.set(line, { strokeDasharray: length, strokeDashoffset: length });
+    gsap.utils.toArray(extraLineRef.current.children).forEach((line, index) => {
+      if (typeof line.getTotalLength === "function") {
+        const length = line.getTotalLength();
+        gsap.set(line, { strokeDasharray: length, strokeDashoffset: length });
 
-          // Entry animation
-          gsap.to(line, {
-            strokeDashoffset: 0,
-            ease: "sine.inOut",
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: `30%+=${index * 5}% top`,
-              end: `50%+=${index * 5}% top`,
-              scrub: true,
-            },
-          });
+        // Entry animation
+        gsap.to(line, {
+          strokeDashoffset: 0,
+          ease: "sine.inOut",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: `30%+=${index * 5}% top`,
+            end: `50%+=${index * 5}% top`,
+            scrub: true,
+          },
+        });
 
-          // Exit animation
-          gsap.to(line, {
-            strokeDashoffset: length,
-            scale: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: `50%+=${index * 5}% top`,
-              end: `65%+=${index * 5}% top`,
-              scrub: true,
-              onUpdate: (self) => {
-                const progress = self.progress;
-                gsap.set(line, { strokeDashoffset: length * progress });
-              },
+        // Exit animation
+        gsap.to(line, {
+          strokeDashoffset: length,
+          scale: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: `50%+=${index * 5}% top`,
+            end: `65%+=${index * 5}% top`,
+            scrub: true,
+            onUpdate: (self) => {
+              const progress = self.progress;
+              gsap.set(line, { strokeDashoffset: length * progress });
             },
-          });
-        }
-      });
+          },
+        });
+      }
+    });
 
     // Opacity animations for soccer_extra-line
     gsap.to(extraLineRef.current, {

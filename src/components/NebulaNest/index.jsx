@@ -390,7 +390,7 @@ const NebulaNest = () => {
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
         <svg
           ref={statueofunityRef}
-          className="w-[75vw] h-[75vh] md:w-[85vw] md:h-[85vh] sm:w-[90vw] sm:h-[90vh] xs:w-[95vw] xs:h-[95vh] object-contain opacity-0 scale-0"
+          className="w-[70vw] h-[70vh] md:w-[70vw] md:h-[70vh] sm:w-[85vw] sm:h-[85vh] xs:w-[90vw] xs:h-[90vh] object-contain opacity-0 scale-0"
           xmlns="http://www.w3.org/2000/svg"
           version="1.1"
           viewBox="0 0 980 980"
