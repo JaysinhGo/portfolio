@@ -101,7 +101,7 @@ const SpiralIntro = () => {
         scrollTrigger: {
           trigger: scrollContainerRef.current,
           start: "10% top",
-          end: "100% bottom",
+          end: "200% bottom",
           scrub: 0.3,
           onUpdate: (self) => {
             if (self.progress <= 0) return;
