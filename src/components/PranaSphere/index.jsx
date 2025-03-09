@@ -397,7 +397,7 @@ const PranaSphere = () => {
 
   // Render SVG with circles and gradients
   return (
-    <div ref={containerRef} className="relative w-screen h-[1000vh]">
+    <div ref={containerRef} className="relative w-screen h-[1200vh]">
       <div className="fixed inset-0 flex items-center justify-center">
         <svg
           ref={svgRef}
