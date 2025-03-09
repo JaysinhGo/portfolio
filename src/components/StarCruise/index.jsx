@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import GalacticRide from "../GalacticRide";
+
 gsap.registerPlugin(ScrollTrigger);
 
 const StarCruise = () => {
