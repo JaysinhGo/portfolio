@@ -477,18 +477,18 @@ const NebulaNest = () => {
         scrub: 1,
         onUpdate: (self) => {
           const progress = self.progress;
+          const hue1 = (progress * 720) % 360;
+          const hue2 = (progress * 720 + 167) % 360;
           const gradient = document.querySelector("#vvvortex-grad");
           if (gradient) {
-            // Enhanced golden gradient colors
-            const color1 = `hsl(${36 + progress * 8}, 100%, ${
-              65 + progress * 15
-            }%)`; // Bright golden
-            const color2 = `hsl(${43 + progress * 8}, 90%, ${
-              45 + progress * 10
-            }%)`; // Deep golden
-
-            gradient.children[0].setAttribute("stop-color", color1);
-            gradient.children[1].setAttribute("stop-color", color2);
+            gradient.children[0].setAttribute(
+              "stop-color",
+              `hsl(${hue1}, 100%, 67%)`
+            );
+            gradient.children[1].setAttribute(
+              "stop-color",
+              `hsl(${hue2}, 52%, 78%)`
+            );
           }
         },
       });
@@ -517,31 +517,34 @@ const NebulaNest = () => {
             y2="100%"
             id="vvvortex-grad"
           >
-            <stop stopColor="hsl(36, 100%, 65%)" stopOpacity={1} offset="0%" />
-            <stop stopColor="hsl(43, 90%, 45%)" stopOpacity={1} offset="100%" />
+            <stop stopColor="hsl(1.4, 100%, 67%)" stopOpacity={1} offset="0%" />
+            <stop
+              stopColor="hsl(167, 52%, 78%)"
+              stopOpacity={1}
+              offset="100%"
+            />
           </linearGradient>
         </defs>
         <g stroke="url(#vvvortex-grad)" fill="none" strokeLinecap="round">
-          {/* Outer circles (highest opacity) */}
           <circle
             r={1925}
             cx={400}
             cy={400}
             strokeWidth={5}
-            strokeDasharray="2 15"
+            strokeDasharray="23 52"
             strokeDashoffset={25}
             transform="rotate(316, 400, 400)"
-            opacity={0.95}
+            opacity={1}
           />
           <circle
             r={1890}
             cx={400}
             cy={400}
             strokeWidth={5}
-            strokeDasharray="3 12"
+            strokeDasharray="41 26"
             strokeDashoffset={25}
             transform="rotate(245, 400, 400)"
-            opacity={0.92}
+            opacity={0.98}
           />
           <circle
             r={1855}
@@ -781,7 +784,7 @@ const NebulaNest = () => {
             strokeDasharray="45 45"
             strokeDashoffset={25}
             transform="rotate(12, 400, 400)"
-            opacity={0.45}
+            opacity={0.56}
           />
           <circle
             r={1015}
@@ -791,7 +794,7 @@ const NebulaNest = () => {
             strokeDasharray="45 41"
             strokeDashoffset={25}
             transform="rotate(339, 400, 400)"
-            opacity={0.4}
+            opacity={0.54}
           />
           <circle
             r={980}
@@ -801,7 +804,7 @@ const NebulaNest = () => {
             strokeDasharray="25 42"
             strokeDashoffset={25}
             transform="rotate(113, 400, 400)"
-            opacity={0.38}
+            opacity={0.53}
           />
           <circle
             r={945}
@@ -811,7 +814,7 @@ const NebulaNest = () => {
             strokeDasharray="12 54"
             strokeDashoffset={25}
             transform="rotate(103, 400, 400)"
-            opacity={0.36}
+            opacity={0.51}
           />
           <circle
             r={910}
@@ -821,7 +824,7 @@ const NebulaNest = () => {
             strokeDasharray="38 11"
             strokeDashoffset={25}
             transform="rotate(266, 400, 400)"
-            opacity={0.34}
+            opacity={0.49}
           />
           <circle
             r={875}
@@ -831,7 +834,7 @@ const NebulaNest = () => {
             strokeDasharray="51 24"
             strokeDashoffset={25}
             transform="rotate(82, 400, 400)"
-            opacity={0.32}
+            opacity={0.47}
           />
           <circle
             r={840}
@@ -841,7 +844,7 @@ const NebulaNest = () => {
             strokeDasharray="17 43"
             strokeDashoffset={25}
             transform="rotate(185, 400, 400)"
-            opacity={0.3}
+            opacity={0.45}
           />
           <circle
             r={805}
@@ -851,7 +854,7 @@ const NebulaNest = () => {
             strokeDasharray="15 35"
             strokeDashoffset={25}
             transform="rotate(118, 400, 400)"
-            opacity={0.28}
+            opacity={0.44}
           />
           <circle
             r={770}
@@ -861,7 +864,7 @@ const NebulaNest = () => {
             strokeDasharray="54 53"
             strokeDashoffset={25}
             transform="rotate(296, 400, 400)"
-            opacity={0.26}
+            opacity={0.42}
           />
           <circle
             r={735}
@@ -871,7 +874,7 @@ const NebulaNest = () => {
             strokeDasharray="36 34"
             strokeDashoffset={25}
             transform="rotate(287, 400, 400)"
-            opacity={0.24}
+            opacity={0.4}
           />
           <circle
             r={700}
@@ -881,7 +884,7 @@ const NebulaNest = () => {
             strokeDasharray="41 34"
             strokeDashoffset={25}
             transform="rotate(76, 400, 400)"
-            opacity={0.22}
+            opacity={0.38}
           />
           <circle
             r={665}
@@ -891,7 +894,7 @@ const NebulaNest = () => {
             strokeDasharray="15 22"
             strokeDashoffset={25}
             transform="rotate(104, 400, 400)"
-            opacity={0.2}
+            opacity={0.37}
           />
           <circle
             r={630}
@@ -901,7 +904,7 @@ const NebulaNest = () => {
             strokeDasharray="51 37"
             strokeDashoffset={25}
             transform="rotate(317, 400, 400)"
-            opacity={0.18}
+            opacity={0.35}
           />
           <circle
             r={595}
@@ -911,7 +914,7 @@ const NebulaNest = () => {
             strokeDasharray="11 29"
             strokeDashoffset={25}
             transform="rotate(25, 400, 400)"
-            opacity={0.16}
+            opacity={0.33}
           />
           <circle
             r={560}
@@ -921,7 +924,7 @@ const NebulaNest = () => {
             strokeDasharray="37 21"
             strokeDashoffset={25}
             transform="rotate(206, 400, 400)"
-            opacity={0.14}
+            opacity={0.31}
           />
           <circle
             r={525}
@@ -931,7 +934,7 @@ const NebulaNest = () => {
             strokeDasharray="21 10"
             strokeDashoffset={25}
             transform="rotate(322, 400, 400)"
-            opacity={0.12}
+            opacity={0.3}
           />
           <circle
             r={490}
@@ -941,7 +944,7 @@ const NebulaNest = () => {
             strokeDasharray="15 24"
             strokeDashoffset={25}
             transform="rotate(352, 400, 400)"
-            opacity={0.1}
+            opacity={0.28}
           />
           <circle
             r={455}
@@ -951,7 +954,7 @@ const NebulaNest = () => {
             strokeDasharray="21 18"
             strokeDashoffset={25}
             transform="rotate(341, 400, 400)"
-            opacity={0.08}
+            opacity={0.26}
           />
           <circle
             r={420}
@@ -961,7 +964,7 @@ const NebulaNest = () => {
             strokeDasharray="17 26"
             strokeDashoffset={25}
             transform="rotate(118, 400, 400)"
-            opacity={0.06}
+            opacity={0.24}
           />
           <circle
             r={385}
@@ -971,7 +974,7 @@ const NebulaNest = () => {
             strokeDasharray="44 36"
             strokeDashoffset={25}
             transform="rotate(87, 400, 400)"
-            opacity={0.04}
+            opacity={0.23}
           />
           <circle
             r={350}
@@ -981,7 +984,7 @@ const NebulaNest = () => {
             strokeDasharray="21 24"
             strokeDashoffset={25}
             transform="rotate(245, 400, 400)"
-            opacity={0.02}
+            opacity={0.21}
           />
           <circle
             r={315}
@@ -991,7 +994,7 @@ const NebulaNest = () => {
             strokeDasharray="29 26"
             strokeDashoffset={25}
             transform="rotate(337, 400, 400)"
-            opacity={0.01}
+            opacity={0.19}
           />
           <circle
             r={280}
@@ -1001,7 +1004,7 @@ const NebulaNest = () => {
             strokeDasharray="23 25"
             strokeDashoffset={25}
             transform="rotate(251, 400, 400)"
-            opacity={0.005}
+            opacity={0.17}
           />
           <circle
             r={245}
@@ -1011,7 +1014,7 @@ const NebulaNest = () => {
             strokeDasharray="27 26"
             strokeDashoffset={25}
             transform="rotate(340, 400, 400)"
-            opacity={0.002}
+            opacity={0.16}
           />
           <circle
             r={210}
@@ -1021,7 +1024,7 @@ const NebulaNest = () => {
             strokeDasharray="49 49"
             strokeDashoffset={25}
             transform="rotate(357, 400, 400)"
-            opacity={0.001}
+            opacity={0.14}
           />
           <circle
             r={175}
@@ -1031,7 +1034,7 @@ const NebulaNest = () => {
             strokeDasharray="30 54"
             strokeDashoffset={25}
             transform="rotate(196, 400, 400)"
-            opacity={0.0005}
+            opacity={0.12}
           />
           <circle
             r={140}
@@ -1041,7 +1044,7 @@ const NebulaNest = () => {
             strokeDasharray="39 26"
             strokeDashoffset={25}
             transform="rotate(279, 400, 400)"
-            opacity={0.0002}
+            opacity={0.1}
           />
           <circle
             r={105}
@@ -1051,7 +1054,7 @@ const NebulaNest = () => {
             strokeDasharray="53 53"
             strokeDashoffset={25}
             transform="rotate(77, 400, 400)"
-            opacity={0.0001}
+            opacity={0.09}
           />
           <circle
             r={70}
@@ -1061,7 +1064,7 @@ const NebulaNest = () => {
             strokeDasharray="25 49"
             strokeDashoffset={25}
             transform="rotate(206, 400, 400)"
-            opacity={0.00005}
+            opacity={0.07}
           />
           <circle
             r={35}
@@ -1071,7 +1074,7 @@ const NebulaNest = () => {
             strokeDasharray="41 51"
             strokeDashoffset={25}
             transform="rotate(335, 400, 400)"
-            opacity={0.00002}
+            opacity={0.05}
           />
         </g>
       </svg>
@@ -1155,12 +1158,12 @@ const NebulaNest = () => {
               id="vvvortex-grad"
             >
               <stop
-                stopColor="hsl(36, 100%, 65%)"
+                stopColor="hsl(1.4, 100%, 67%)"
                 stopOpacity={1}
                 offset="0%"
               />
               <stop
-                stopColor="hsl(43, 90%, 45%)"
+                stopColor="hsl(167, 52%, 78%)"
                 stopOpacity={1}
                 offset="100%"
               />
