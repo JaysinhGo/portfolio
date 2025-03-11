@@ -33,249 +33,252 @@ const NebulaNest = () => {
   const textElements = useRef([]);
   const highlightedText = useRef([]);
 
-  useGSAP(
-    () => {
-      if (!mainStatueGroupRef.current) return;
+  useGSAP(() => {
+    ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top top",
+      end: "bottom bottom",
+      toggleActions: "play reverse play reverse",
+      onToggle: ({ isActive }) => {
+        gsap.set(containerRef.current, {
+          opacity: isActive ? 1 : 0,
+        });
+      },
+    });
 
-      // Cache DOM elements
-      const paths = Array.from(
-        mainStatueGroupRef.current.querySelectorAll("path")
-      );
-      const statue = statueofunityRef.current;
+    if (!mainStatueGroupRef.current) return;
 
-      // Initial state configuration
-      const initialState = {
-        opacity: 0,
-        scale: 0,
-        transformOrigin: "center center",
-      };
+    // Cache DOM elements
+    const paths = Array.from(
+      mainStatueGroupRef.current.querySelectorAll("path")
+    );
+    const statue = statueofunityRef.current;
 
-      // Set initial states
-      gsap.set([statue, paths], initialState);
-      gsap.set(paths, {
-        y: 100,
-        filter: "blur(20px) brightness(0)",
+    // Initial state configuration
+    const initialState = {
+      opacity: 0,
+      scale: 0,
+      transformOrigin: "center center",
+    };
+
+    // Set initial states
+    gsap.set([statue, paths], initialState);
+    gsap.set(paths, {
+      y: 100,
+      filter: "blur(20px) brightness(0)",
+    });
+
+    // Main animation timeline
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top bottom",
+        end: "bottom bottom",
+        scrub: 0.5,
+        onLeave: () => {
+          gsap.to(statue, {
+            opacity: 0,
+            scale: 0,
+            duration: 0.3,
+            ease: "power2.in",
+          });
+        },
+        onEnterBack: () => {
+          gsap.to(statue, {
+            opacity: 1,
+            scale: 1,
+            duration: 0.3,
+            ease: "power2.out",
+          });
+        },
+      },
+    });
+
+    // Animation sequence
+    tl.to(statue, {
+      opacity: 1,
+      scale: 1,
+      duration: 0.5,
+      ease: "power2.out",
+    })
+      .fromTo(
+        paths,
+        {
+          opacity: 0,
+          scale: 0,
+          y: 50,
+          filter: "blur(20px) brightness(0)",
+        },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          filter: "blur(0px) brightness(1.2)",
+          duration: 1,
+          stagger: {
+            amount: 0.8,
+            from: "center",
+            ease: "power2.out",
+          },
+        },
+        "-=0.3"
+      )
+      // Power surge effect
+      .to(paths, {
+        scale: 1.05,
+        filter: "blur(0px) brightness(1.5)",
+        duration: 0.3,
+        stagger: {
+          amount: 0.4,
+          from: "center",
+        },
+      })
+      .to(paths, {
+        scale: 1,
+        filter: "blur(0px) brightness(1.2)",
+        duration: 0.3,
+        stagger: {
+          amount: 0.2,
+          from: "center",
+        },
       });
 
-      // Main animation timeline
-      const tl = gsap.timeline({
+    return () => {
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+    };
+  }, []);
+
+  useGSAP(() => {
+    // Energy field animation
+    if (energyFieldRef.current) {
+      gsap.set(energyFieldRef.current, {
+        transformOrigin: "center center",
+        opacity: 0,
+        rotation: 0,
+      });
+
+      gsap.to(energyFieldRef.current, {
+        rotation: -360,
+        opacity: 0.1,
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top bottom",
           end: "bottom bottom",
-          scrub: 0.5,
+          scrub: 1,
           onLeave: () => {
-            gsap.to(statue, {
+            gsap.to(energyFieldRef.current, {
               opacity: 0,
-              scale: 0,
-              duration: 0.3,
-              ease: "power2.in",
+              duration: 0.5,
             });
           },
           onEnterBack: () => {
-            gsap.to(statue, {
-              opacity: 1,
-              scale: 1,
-              duration: 0.3,
-              ease: "power2.out",
+            gsap.to(energyFieldRef.current, {
+              opacity: 0.1,
+              duration: 0.5,
             });
           },
         },
       });
+    }
 
-      // Animation sequence
-      tl.to(statue, {
-        opacity: 1,
+    // Rune circles animation
+    if (innerRuneRef.current && outerRuneRef.current) {
+      gsap.set([innerRuneRef.current, outerRuneRef.current], {
+        transformOrigin: "center center",
+        opacity: 0,
+        transformPerspective: 1000,
+      });
+
+      const runesTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "bottom bottom",
+          scrub: 1,
+        },
+      });
+
+      runesTl.to([innerRuneRef.current, outerRuneRef.current], {
+        opacity: 0.3,
+        rotateX: 45,
+        duration: 1,
+        stagger: 0.2,
+      });
+
+      // Continuous rotations
+      gsap.to(innerRuneRef.current, {
+        rotation: 360,
+        rotateY: -360,
+        duration: 50,
+        repeat: -1,
+        ease: "none",
+      });
+
+      gsap.to(outerRuneRef.current, {
+        rotation: -360,
+        rotateY: 360,
+        duration: 70,
+        repeat: -1,
+        ease: "none",
+      });
+    }
+  }, []);
+
+  useGSAP(() => {
+    if (glowingRimRef.current) {
+      // Initial state
+      gsap.set(glowingRimRef.current, {
+        transformOrigin: "center center",
+        opacity: 0,
+        scale: 0.95,
+        filter: "blur(5px)",
+      });
+
+      // Scroll-based reveal with 3D effect
+      const glowTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 60%",
+          end: "bottom bottom",
+          scrub: 1,
+        },
+      });
+
+      glowTl.to(glowingRimRef.current, {
+        opacity: 0.4,
         scale: 1,
-        duration: 0.5,
-        ease: "power2.out",
-      })
-        .fromTo(
-          paths,
+        filter: "blur(0px)",
+        duration: 1.5,
+        ease: "power2.inOut",
+      });
+
+      // Enhanced glow effect
+      gsap.to(glowingRimRef.current, {
+        keyframes: [
           {
-            opacity: 0,
-            scale: 0,
-            y: 50,
-            filter: "blur(20px) brightness(0)",
-          },
-          {
-            opacity: 1,
+            strokeWidth: 3,
+            opacity: 0.4,
             scale: 1,
-            y: 0,
-            filter: "blur(0px) brightness(1.2)",
-            duration: 1,
-            stagger: {
-              amount: 0.8,
-              from: "center",
-              ease: "power2.out",
-            },
+            duration: 2,
           },
-          "-=0.3"
-        )
-        // Power surge effect
-        .to(paths, {
-          scale: 1.05,
-          filter: "blur(0px) brightness(1.5)",
-          duration: 0.3,
-          stagger: {
-            amount: 0.4,
-            from: "center",
+          {
+            strokeWidth: 4,
+            opacity: 0.6,
+            scale: 1.02,
+            duration: 1.5,
           },
-        })
-        .to(paths, {
-          scale: 1,
-          filter: "blur(0px) brightness(1.2)",
-          duration: 0.3,
-          stagger: {
-            amount: 0.2,
-            from: "center",
+          {
+            strokeWidth: 3,
+            opacity: 0.4,
+            scale: 1,
+            duration: 1.5,
           },
-        });
-
-      return () => {
-        ScrollTrigger.getAll().forEach((t) => t.kill());
-      };
-    },
-    { scope: containerRef }
-  );
-
-  useGSAP(
-    () => {
-      // Energy field animation
-      if (energyFieldRef.current) {
-        gsap.set(energyFieldRef.current, {
-          transformOrigin: "center center",
-          opacity: 0,
-          rotation: 0,
-        });
-
-        gsap.to(energyFieldRef.current, {
-          rotation: -360,
-          opacity: 0.1,
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top bottom",
-            end: "bottom bottom",
-            scrub: 1,
-            onLeave: () => {
-              gsap.to(energyFieldRef.current, {
-                opacity: 0,
-                duration: 0.5,
-              });
-            },
-            onEnterBack: () => {
-              gsap.to(energyFieldRef.current, {
-                opacity: 0.1,
-                duration: 0.5,
-              });
-            },
-          },
-        });
-      }
-
-      // Rune circles animation
-      if (innerRuneRef.current && outerRuneRef.current) {
-        gsap.set([innerRuneRef.current, outerRuneRef.current], {
-          transformOrigin: "center center",
-          opacity: 0,
-          transformPerspective: 1000,
-        });
-
-        const runesTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top bottom",
-            end: "bottom bottom",
-            scrub: 1,
-          },
-        });
-
-        runesTl.to([innerRuneRef.current, outerRuneRef.current], {
-          opacity: 0.3,
-          rotateX: 45,
-          duration: 1,
-          stagger: 0.2,
-        });
-
-        // Continuous rotations
-        gsap.to(innerRuneRef.current, {
-          rotation: 360,
-          rotateY: -360,
-          duration: 50,
-          repeat: -1,
-          ease: "none",
-        });
-
-        gsap.to(outerRuneRef.current, {
-          rotation: -360,
-          rotateY: 360,
-          duration: 70,
-          repeat: -1,
-          ease: "none",
-        });
-      }
-    },
-    { scope: containerRef }
-  );
-
-  useGSAP(
-    () => {
-      if (glowingRimRef.current) {
-        // Initial state
-        gsap.set(glowingRimRef.current, {
-          transformOrigin: "center center",
-          opacity: 0,
-          scale: 0.95,
-          filter: "blur(5px)",
-        });
-
-        // Scroll-based reveal with 3D effect
-        const glowTl = gsap.timeline({
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "top 60%",
-            end: "bottom bottom",
-            scrub: 1,
-          },
-        });
-
-        glowTl.to(glowingRimRef.current, {
-          opacity: 0.4,
-          scale: 1,
-          filter: "blur(0px)",
-          duration: 1.5,
-          ease: "power2.inOut",
-        });
-
-        // Enhanced glow effect
-        gsap.to(glowingRimRef.current, {
-          keyframes: [
-            {
-              strokeWidth: 3,
-              opacity: 0.4,
-              scale: 1,
-              duration: 2,
-            },
-            {
-              strokeWidth: 4,
-              opacity: 0.6,
-              scale: 1.02,
-              duration: 1.5,
-            },
-            {
-              strokeWidth: 3,
-              opacity: 0.4,
-              scale: 1,
-              duration: 1.5,
-            },
-          ],
-          repeat: -1,
-          ease: "sine.inOut",
-        });
-      }
-    },
-    { scope: containerRef }
-  );
+        ],
+        repeat: -1,
+        ease: "sine.inOut",
+      });
+    }
+  }, []);
 
   useGSAP(() => {
     const words = textElements.current;
@@ -395,113 +398,110 @@ const NebulaNest = () => {
     return () => textTl.kill();
   }, []);
 
-  useGSAP(
-    () => {
-      if (!cosmicVortexRef.current) return;
+  useGSAP(() => {
+    if (!cosmicVortexRef.current) return;
 
-      // Get all circles
-      const circles = cosmicVortexRef.current.querySelectorAll("circle");
+    // Get all circles
+    const circles = cosmicVortexRef.current.querySelectorAll("circle");
 
-      // Set initial state
-      gsap.set(circles, {
-        opacity: 0,
-        scale: 0,
-        transformOrigin: "center center",
-      });
+    // Set initial state
+    gsap.set(circles, {
+      opacity: 0,
+      scale: 0,
+      transformOrigin: "center center",
+    });
 
-      // Create timeline for the vortex animation
-      const vortexTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top center",
-          end: "bottom center",
-          scrub: 1,
-          onEnter: () => {
-            gsap.to(cosmicVortexRef.current, {
-              opacity: 1,
-              duration: 0.5,
-            });
-          },
-          onLeave: () => {
-            gsap.to(cosmicVortexRef.current, {
-              opacity: 0,
-              duration: 0.5,
-            });
-          },
-          onEnterBack: () => {
-            gsap.to(cosmicVortexRef.current, {
-              opacity: 1,
-              duration: 0.5,
-            });
-          },
-          onLeaveBack: () => {
-            gsap.to(cosmicVortexRef.current, {
-              opacity: 0,
-              duration: 0.5,
-            });
-          },
-        },
-      });
-
-      // Animate circles
-      circles.forEach((circle, i) => {
-        const delay = i * 0.02;
-        vortexTl.to(
-          circle,
-          {
-            opacity: circle.getAttribute("opacity"),
-            scale: 1,
-            duration: 1,
-            delay: delay,
-            ease: "power2.out",
-          },
-          0
-        );
-      });
-
-      // Add continuous rotation
-      circles.forEach((circle) => {
-        gsap.to(circle, {
-          rotate: "+=360",
-          duration: gsap.utils.random(20, 40),
-          repeat: -1,
-          ease: "none",
-        });
-      });
-
-      // Update gradient colors on scroll
-      ScrollTrigger.create({
+    // Create timeline for the vortex animation
+    const vortexTl = gsap.timeline({
+      scrollTrigger: {
         trigger: containerRef.current,
         start: "top center",
         end: "bottom center",
         scrub: 1,
-        onUpdate: (self) => {
-          const progress = self.progress;
-          const gradient = document.querySelector("#vvvortex-grad");
-          if (gradient) {
-            // Enhanced golden gradient colors
-            const color1 = `hsl(${36 + progress * 8}, 100%, ${
-              65 + progress * 15
-            }%)`; // Bright golden
-            const color2 = `hsl(${43 + progress * 8}, 90%, ${
-              45 + progress * 10
-            }%)`; // Deep golden
-
-            gradient.children[0].setAttribute("stop-color", color1);
-            gradient.children[1].setAttribute("stop-color", color2);
-          }
+        onEnter: () => {
+          gsap.to(cosmicVortexRef.current, {
+            opacity: 1,
+            duration: 0.5,
+          });
         },
-      });
+        onLeave: () => {
+          gsap.to(cosmicVortexRef.current, {
+            opacity: 0,
+            duration: 0.5,
+          });
+        },
+        onEnterBack: () => {
+          gsap.to(cosmicVortexRef.current, {
+            opacity: 1,
+            duration: 0.5,
+          });
+        },
+        onLeaveBack: () => {
+          gsap.to(cosmicVortexRef.current, {
+            opacity: 0,
+            duration: 0.5,
+          });
+        },
+      },
+    });
 
-      return () => {
-        ScrollTrigger.getAll().forEach((t) => t.kill());
-      };
-    },
-    { scope: containerRef }
-  );
+    // Animate circles
+    circles.forEach((circle, i) => {
+      const delay = i * 0.02;
+      vortexTl.to(
+        circle,
+        {
+          opacity: circle.getAttribute("opacity"),
+          scale: 1,
+          duration: 1,
+          delay: delay,
+          ease: "power2.out",
+        },
+        0
+      );
+    });
+
+    // Add continuous rotation
+    circles.forEach((circle) => {
+      gsap.to(circle, {
+        rotate: "+=360",
+        duration: gsap.utils.random(20, 40),
+        repeat: -1,
+        ease: "none",
+      });
+    });
+
+    // Update gradient colors on scroll
+    ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: "top center",
+      end: "bottom center",
+      scrub: 1,
+      onUpdate: (self) => {
+        const progress = self.progress;
+        const gradient = document.querySelector("#vvvortex-grad");
+        if (gradient) {
+          // Enhanced golden gradient colors
+          const color1 = `hsl(${36 + progress * 8}, 100%, ${
+            65 + progress * 15
+          }%)`; // Bright golden
+          const color2 = `hsl(${43 + progress * 8}, 90%, ${
+            45 + progress * 10
+          }%)`; // Deep golden
+
+          gradient.children[0].setAttribute("stop-color", color1);
+          gradient.children[1].setAttribute("stop-color", color2);
+        }
+      },
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+    };
+  }, []);
 
   return (
-    <div ref={containerRef} className="relative w-screen h-[1200vh]">
+    <div ref={containerRef} className="relative w-screen h-[1200vh] opacity-0">
       {/* Add cosmic vortex SVG first */}
       <svg
         ref={cosmicVortexRef}

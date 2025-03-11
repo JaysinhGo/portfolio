@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import GalacticRide from "../GalacticRide";
+import InProgress from "../InProgress";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -212,7 +213,9 @@ const StarCruise = () => {
           </svg>
         </div>
       </div>
+      <div className="relative w-screen h-[500vh]"></div>
       <div className="relative w-screen h-[100vh]"></div>
+      <InProgress />
     </>
   );
 };

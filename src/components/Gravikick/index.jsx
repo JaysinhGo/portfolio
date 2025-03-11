@@ -371,7 +371,7 @@ const Gravikick = () => {
     const textTl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
-        start: "top bottom",
+        start: "10% bottom",
         end: "90% bottom",
         scrub: 0.3,
         onLeave: () => {
