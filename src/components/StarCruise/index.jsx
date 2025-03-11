@@ -8,7 +8,7 @@ import InProgress from "../InProgress";
 gsap.registerPlugin(ScrollTrigger);
 
 const StarCruise = () => {
-  // Refs for DOM elements
+  const shipRiseRef = useRef(null);
   const scrollContainerRef = useRef(null);
   const spaceShipRef = useRef(null);
   const spaceShipFireRef = useRef(null);
@@ -176,6 +176,23 @@ const StarCruise = () => {
       },
     });
 
+    // Add new timeline for ship rise animation
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: shipRiseRef.current,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1,
+        onUpdate: (self) => {
+          const progress = self.progress;
+          gsap.to(spaceShipRef.current, {
+            top: `-${40 - progress * 40}vh`,
+            immediateRender: false,
+          });
+        },
+      },
+    });
+
     // Cleanup
     return () => {
       clearInterval(colorChangeInterval);
@@ -189,10 +206,11 @@ const StarCruise = () => {
       <div ref={scrollContainerRef} className="relative w-screen">
         <div className="relative w-screen h-[100vh]"></div>
         <GalacticRide />
-        <div className="fixed top-0 left-0 w-full h-full flex items-start justify-center">
+        <div ref={shipRiseRef} className="relative w-screen h-[240vh]"></div>
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
           <svg
             ref={spaceShipRef}
-            className="w-[30px] sm:w-[40px] md:w-[50px] scale-0 origin-center"
+            className="relative w-[30px] sm:w-[40px] md:w-[50px] scale-0 origin-center top-[-40vh]"
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
             width="100"
@@ -213,7 +231,6 @@ const StarCruise = () => {
           </svg>
         </div>
       </div>
-      <div className="relative w-screen h-[500vh]"></div>
       <div className="relative w-screen h-[100vh]"></div>
       <InProgress />
     </>

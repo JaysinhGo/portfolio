@@ -528,7 +528,7 @@ const NebulaNest = () => {
 
             // Calculate opacity - reduced overall opacity
             const normalizedIndex = (40 - index) / 40; // 1 to 0
-            const opacity = 0.6 * normalizedIndex; // Reduced from 0.95 to 0.6
+            const opacity = 0.8 * normalizedIndex; // Reduced from 0.95 to 0.6
 
             // Adjust stroke width ranges for 40 circles
             const strokeWidth =
