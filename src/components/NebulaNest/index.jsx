@@ -36,7 +36,7 @@ const NebulaNest = () => {
   useGSAP(() => {
     ScrollTrigger.create({
       trigger: containerRef.current,
-      start: "top top",
+      start: "top bottom",
       end: "bottom bottom",
       toggleActions: "play reverse play reverse",
       onToggle: ({ isActive }) => {
@@ -501,7 +501,7 @@ const NebulaNest = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-screen h-[1200vh]">
+    <div ref={containerRef} className="relative w-screen h-[1000vh]">
       {/* Add cosmic vortex SVG first */}
       <svg
         ref={cosmicVortexRef}

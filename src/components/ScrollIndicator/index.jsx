@@ -1,25 +1,87 @@
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import resumePDF from "../../assets/JaysinhGohil-LeadWebDeveloper.pdf";
 
 gsap.registerPlugin(ScrollTrigger);
 
 function ScrollIndicator() {
-  const scrollContainerRef = useRef(null); // Scrolling area
-  const svgRef = useRef(null); // SVG container
-  const circleRef = useRef(null); // Moving dot
-  const trackRectRef = useRef(null); // Track rectangle
+  const scrollContainerRef = useRef(null);
+  const svgRef = useRef(null);
+  const circleRef = useRef(null);
+  const trackRectRef = useRef(null);
+  const arrowRef = useRef(null);
+  const downloadCv = useRef(null);
+  const [player, setPlayer] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const playerRef = useRef(null);
+  const playButtonRef = useRef(null);
+
+  const handleDownloadCV = () => window.open(resumePDF, "_blank");
+
+  useEffect(() => {
+    // Load YouTube IFrame API
+    const tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName("script")[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    // Initialize YouTube player when API is ready
+    window.onYouTubeIframeAPIReady = () => {
+      playerRef.current = new window.YT.Player("youtube-player", {
+        height: "0",
+        width: "0",
+        videoId: "6lDEyKA5I40", // Your YouTube video ID
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          rel: 0,
+        },
+        events: {
+          onReady: (event) => {
+            setPlayer(event.target);
+          },
+          onStateChange: (event) => {
+            setIsPlaying(event.data === window.YT.PlayerState.PLAYING);
+          },
+          onError: (error) => {
+            console.error("YouTube player error:", error);
+            setIsPlaying(false);
+          },
+        },
+      });
+    };
+
+    return () => {
+      if (playerRef.current) {
+        playerRef.current.destroy();
+      }
+    };
+  }, []);
+
+  const togglePlay = () => {
+    if (!player) return;
+
+    if (isPlaying) {
+      player.pauseVideo();
+    } else {
+      player.playVideo();
+    }
+  };
 
   useGSAP(() => {
     const svg = svgRef.current;
     const circle = circleRef.current;
     const track = trackRectRef.current;
     const container = scrollContainerRef.current;
-
+    const playButton = playButtonRef.current;
     if (!svg || !circle || !track || !container) return;
 
     gsap.set(svg, { transformOrigin: "center", scale: 1 });
+    gsap.set(playButton, { transformOrigin: "center", scale: 0, opacity: 0 });
 
     // Animate dot movement
     gsap.to(circle, {
@@ -50,11 +112,43 @@ function ScrollIndicator() {
       },
       scale: 0,
     });
+
+    gsap.to(playButton, {
+      scrollTrigger: {
+        trigger: container,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.4,
+      },
+      scale: 1,
+      opacity: 1,
+    });
+
+    gsap.from(arrowRef.current, {
+      y: -6,
+      duration: 1.4,
+      repeat: -1,
+      yoyo: true,
+      ease: "linear",
+    });
+
+    // Fade out CV button on scroll
+    gsap.to(downloadCv.current, {
+      scrollTrigger: {
+        trigger: container,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.4,
+        toggleActions: "play reverse play reverse",
+      },
+      y: 100,
+      opacity: 0,
+    });
   });
 
   return (
     <div ref={scrollContainerRef} className="relative w-screen h-[200vh]">
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-2">
         <svg
           ref={svgRef}
           width="40"
@@ -82,6 +176,104 @@ function ScrollIndicator() {
           />
         </svg>
       </div>
+      <div
+        ref={downloadCv}
+        onClick={handleDownloadCV}
+        className="fixed flex gap-2 bottom-10 left-1/2 -translate-x-1/2 flex items-center justify-center p-2 px-4 bg-[var(--scroll-indicator-fill-rgba)] border-[var(--scroll-indicator-fill)] border-[0.1px] cursor-pointer rounded-md z-11 scale-[0.8]"
+      >
+        <svg
+          className="w-6 h-6 fill-[#fff]"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            ref={arrowRef}
+            d="M13 11.15V4a1 1 0 1 0-2 0v7.15L8.78 8.374a1 1 0 1 0-1.56 1.25l4 5a1 1 0 0 0 1.56 0l4-5a1 1 0 1 0-1.56-1.25L13 11.15Z"
+          />
+          <path d="M9.657 15.874 7.358 13H5a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2.358l-2.3 2.874a3 3 0 0 1-4.685 0ZM17 16a1 1 0 1 0 0 2h.01a1 1 0 1 0 0-2H17Z" />
+        </svg>
+        <p className="text-24 font-normal text-white origin-center whitespace-nowrap transition-[filter,text-shadow] duration-300">
+          Resume
+        </p>
+      </div>
+
+      <div className="fixed top-8 right-8 z-11">
+        <button
+          ref={playButtonRef}
+          onClick={togglePlay}
+          className="transform transition-all duration-300 hover:scale-105 opacity-0 z-11 cursor-pointer 
+            hover:-translate-y-0.5 active:translate-y-0.5 
+            shadow-[0_0_15px_rgba(var(--scroll-indicator-fill-rgb),0.3)] 
+            hover:shadow-[0_0_20px_rgba(var(--scroll-indicator-fill-rgb),0.5)]
+            active:shadow-[0_0_10px_rgba(var(--scroll-indicator-fill-rgb),0.2)]"
+          aria-label={isPlaying ? "Pause music" : "Play music"}
+        >
+          <svg
+            className="w-8 h-8 rounded-full 
+              border-[var(--scroll-indicator-fill)] border-[1px]
+              bg-[rgba(var(--scroll-indicator-fill-rgb),0.1)]
+              backdrop-blur-sm
+              shadow-inner
+              transition-all duration-300
+              hover:bg-[rgba(var(--scroll-indicator-fill-rgb),0.2)]"
+            viewBox="0 0 496.158 496.158"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {isPlaying ? (
+              <g>
+                <path
+                  className="fill-[var(--scroll-indicator-fill-rgba)]"
+                  d="M496.158 248.085c0-137.022-111.068-248.082-248.074-248.082C111.07.003 0 111.063 0 248.085c0 137.001 111.07 248.07 248.084 248.07 137.006 0 248.074-111.069 248.074-248.07z"
+                />
+                <g fill="#DFF2F4">
+                  <rect x="175" y="175" width="50" height="150" rx="10" />
+                  <rect x="275" y="175" width="50" height="150" rx="10" />
+                </g>
+              </g>
+            ) : (
+              <g>
+                <path
+                  className="fill-[var(--scroll-indicator-fill-rgba)]"
+                  d="M496.158 248.085c0-137.022-111.068-248.082-248.074-248.082C111.07.003 0 111.063 0 248.085c0 137.001 111.07 248.07 248.084 248.07 137.006 0 248.074-111.069 248.074-248.07z"
+                />
+                <g fill="#DFF2F4">
+                  <path d="M73.412 251.075c0 3.313-2.686 6-6 6H56.746c-3.314 0-6-2.687-6-6v-6.5c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v6.5z" />
+                  <path d="M104.412 266.825c0 3.313-2.686 6-6 6H87.746c-3.314 0-6-2.687-6-6v-37.5c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v37.5z" />
+                </g>
+                <g fill="#B5E3EA">
+                  <path d="M135.412 274.579c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-53c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v53z" />
+                  <path d="M166.412 290.079c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-84c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v84z" />
+                </g>
+                <g fill="#A3D5E0">
+                  <path d="M197.412 321.079c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-146c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v146z" />
+                  <path d="M228.412 336.579c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-177c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v177z" />
+                </g>
+                <path
+                  fill="#8EC5CE"
+                  d="M259.412 383.079c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-270c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v270z"
+                />
+                <g fill="#A3D5E0">
+                  <path d="M290.412 321.079c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-146c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v146z" />
+                  <path d="M321.412 290.079c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-84c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v84z" />
+                </g>
+                <g fill="#B5E3EA">
+                  <path d="M352.412 305.579c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-115c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v115z" />
+                  <path d="M383.412 274.575c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-53c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v53z" />
+                </g>
+                <g fill="#DFF2F4">
+                  <path d="M445.412 251.261c0 3.314-2.686 6-6 6h-10.666c-3.314 0-6-2.686-6-6v-6.5c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v6.5z" />
+                  <path d="M414.412 259.079c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-22c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v22z" />
+                </g>
+              </g>
+            )}
+          </svg>
+        </button>
+      </div>
+      <div id="youtube-player" style={{ display: "none" }} />
     </div>
   );
 }

@@ -5,6 +5,7 @@
   --animate-twinkle: move-twink-back 200s linear infinite;
   --animate-clouds: move-clouds-back 700s linear infinite;
   --scroll-indicator-fill: #f06;
+  --scroll-indicator-fill-rgba: rgba(255, 0, 102, 0.2);
 }
 
 @keyframes move-twink-back {
