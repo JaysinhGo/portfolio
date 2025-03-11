@@ -477,18 +477,18 @@ const NebulaNest = () => {
         scrub: 1,
         onUpdate: (self) => {
           const progress = self.progress;
-          const hue1 = (progress * 720) % 360;
-          const hue2 = (progress * 720 + 167) % 360;
           const gradient = document.querySelector("#vvvortex-grad");
           if (gradient) {
-            gradient.children[0].setAttribute(
-              "stop-color",
-              `hsl(${hue1}, 100%, 67%)`
-            );
-            gradient.children[1].setAttribute(
-              "stop-color",
-              `hsl(${hue2}, 52%, 78%)`
-            );
+            // Enhanced golden gradient colors
+            const color1 = `hsl(${36 + progress * 8}, 100%, ${
+              65 + progress * 15
+            }%)`; // Bright golden
+            const color2 = `hsl(${43 + progress * 8}, 90%, ${
+              45 + progress * 10
+            }%)`; // Deep golden
+
+            gradient.children[0].setAttribute("stop-color", color1);
+            gradient.children[1].setAttribute("stop-color", color2);
           }
         },
       });
@@ -517,565 +517,40 @@ const NebulaNest = () => {
             y2="100%"
             id="vvvortex-grad"
           >
-            <stop stopColor="hsl(1.4, 100%, 67%)" stopOpacity={1} offset="0%" />
-            <stop
-              stopColor="hsl(167, 52%, 78%)"
-              stopOpacity={1}
-              offset="100%"
-            />
+            <stop stopColor="hsl(36, 100%, 65%)" stopOpacity={1} offset="0%" />
+            <stop stopColor="hsl(43, 90%, 45%)" stopOpacity={1} offset="100%" />
           </linearGradient>
         </defs>
         <g stroke="url(#vvvortex-grad)" fill="none" strokeLinecap="round">
-          <circle
-            r={1925}
-            cx={400}
-            cy={400}
-            strokeWidth={5}
-            strokeDasharray="23 52"
-            strokeDashoffset={25}
-            transform="rotate(316, 400, 400)"
-            opacity={1}
-          />
-          <circle
-            r={1890}
-            cx={400}
-            cy={400}
-            strokeWidth={5}
-            strokeDasharray="41 26"
-            strokeDashoffset={25}
-            transform="rotate(245, 400, 400)"
-            opacity={0.98}
-          />
-          <circle
-            r={1855}
-            cx={400}
-            cy={400}
-            strokeWidth={5}
-            strokeDasharray="35 24"
-            strokeDashoffset={25}
-            transform="rotate(143, 400, 400)"
-            opacity={0.96}
-          />
-          <circle
-            r={1820}
-            cx={400}
-            cy={400}
-            strokeWidth={5}
-            strokeDasharray="35 30"
-            strokeDashoffset={25}
-            transform="rotate(157, 400, 400)"
-            opacity={0.95}
-          />
-          <circle
-            r={1785}
-            cx={400}
-            cy={400}
-            strokeWidth={5}
-            strokeDasharray="22 25"
-            strokeDashoffset={25}
-            transform="rotate(62, 400, 400)"
-            opacity={0.93}
-          />
-          <circle
-            r={1750}
-            cx={400}
-            cy={400}
-            strokeWidth={5}
-            strokeDasharray="28 22"
-            strokeDashoffset={25}
-            transform="rotate(229, 400, 400)"
-            opacity={0.91}
-          />
-          <circle
-            r={1715}
-            cx={400}
-            cy={400}
-            strokeWidth={5}
-            strokeDasharray="26 18"
-            strokeDashoffset={25}
-            transform="rotate(33, 400, 400)"
-            opacity={0.89}
-          />
-          <circle
-            r={1680}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="33 16"
-            strokeDashoffset={25}
-            transform="rotate(55, 400, 400)"
-            opacity={0.88}
-          />
-          <circle
-            r={1645}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="11 14"
-            strokeDashoffset={25}
-            transform="rotate(199, 400, 400)"
-            opacity={0.86}
-          />
-          <circle
-            r={1610}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="22 19"
-            strokeDashoffset={25}
-            transform="rotate(200, 400, 400)"
-            opacity={0.84}
-          />
-          <circle
-            r={1575}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="16 24"
-            strokeDashoffset={25}
-            transform="rotate(243, 400, 400)"
-            opacity={0.82}
-          />
-          <circle
-            r={1540}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="17 43"
-            strokeDashoffset={25}
-            transform="rotate(147, 400, 400)"
-            opacity={0.81}
-          />
-          <circle
-            r={1505}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="12 35"
-            strokeDashoffset={25}
-            transform="rotate(95, 400, 400)"
-            opacity={0.79}
-          />
-          <circle
-            r={1470}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="48 55"
-            strokeDashoffset={25}
-            transform="rotate(186, 400, 400)"
-            opacity={0.77}
-          />
-          <circle
-            r={1435}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="14 27"
-            strokeDashoffset={25}
-            transform="rotate(338, 400, 400)"
-            opacity={0.75}
-          />
-          <circle
-            r={1400}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="24 27"
-            strokeDashoffset={25}
-            transform="rotate(209, 400, 400)"
-            opacity={0.74}
-          />
-          <circle
-            r={1365}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="28 43"
-            strokeDashoffset={25}
-            transform="rotate(94, 400, 400)"
-            opacity={0.72}
-          />
-          <circle
-            r={1330}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="50 13"
-            strokeDashoffset={25}
-            transform="rotate(311, 400, 400)"
-            opacity={0.7}
-          />
-          <circle
-            r={1295}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="20 52"
-            strokeDashoffset={25}
-            transform="rotate(191, 400, 400)"
-            opacity={0.68}
-          />
-          <circle
-            r={1260}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="18 30"
-            strokeDashoffset={25}
-            transform="rotate(287, 400, 400)"
-            opacity={0.67}
-          />
-          <circle
-            r={1225}
-            cx={400}
-            cy={400}
-            strokeWidth={4}
-            strokeDasharray="25 13"
-            strokeDashoffset={25}
-            transform="rotate(219, 400, 400)"
-            opacity={0.65}
-          />
-          <circle
-            r={1190}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="49 19"
-            strokeDashoffset={25}
-            transform="rotate(10, 400, 400)"
-            opacity={0.63}
-          />
-          <circle
-            r={1155}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="47 29"
-            strokeDashoffset={25}
-            transform="rotate(219, 400, 400)"
-            opacity={0.61}
-          />
-          <circle
-            r={1120}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="24 10"
-            strokeDashoffset={25}
-            transform="rotate(83, 400, 400)"
-            opacity={0.6}
-          />
-          <circle
-            r={1085}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="35 19"
-            strokeDashoffset={25}
-            transform="rotate(4, 400, 400)"
-            opacity={0.58}
-          />
-          <circle
-            r={1050}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="45 45"
-            strokeDashoffset={25}
-            transform="rotate(12, 400, 400)"
-            opacity={0.56}
-          />
-          <circle
-            r={1015}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="45 41"
-            strokeDashoffset={25}
-            transform="rotate(339, 400, 400)"
-            opacity={0.54}
-          />
-          <circle
-            r={980}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="25 42"
-            strokeDashoffset={25}
-            transform="rotate(113, 400, 400)"
-            opacity={0.53}
-          />
-          <circle
-            r={945}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="12 54"
-            strokeDashoffset={25}
-            transform="rotate(103, 400, 400)"
-            opacity={0.51}
-          />
-          <circle
-            r={910}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="38 11"
-            strokeDashoffset={25}
-            transform="rotate(266, 400, 400)"
-            opacity={0.49}
-          />
-          <circle
-            r={875}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="51 24"
-            strokeDashoffset={25}
-            transform="rotate(82, 400, 400)"
-            opacity={0.47}
-          />
-          <circle
-            r={840}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="17 43"
-            strokeDashoffset={25}
-            transform="rotate(185, 400, 400)"
-            opacity={0.45}
-          />
-          <circle
-            r={805}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="15 35"
-            strokeDashoffset={25}
-            transform="rotate(118, 400, 400)"
-            opacity={0.44}
-          />
-          <circle
-            r={770}
-            cx={400}
-            cy={400}
-            strokeWidth={3}
-            strokeDasharray="54 53"
-            strokeDashoffset={25}
-            transform="rotate(296, 400, 400)"
-            opacity={0.42}
-          />
-          <circle
-            r={735}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="36 34"
-            strokeDashoffset={25}
-            transform="rotate(287, 400, 400)"
-            opacity={0.4}
-          />
-          <circle
-            r={700}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="41 34"
-            strokeDashoffset={25}
-            transform="rotate(76, 400, 400)"
-            opacity={0.38}
-          />
-          <circle
-            r={665}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="15 22"
-            strokeDashoffset={25}
-            transform="rotate(104, 400, 400)"
-            opacity={0.37}
-          />
-          <circle
-            r={630}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="51 37"
-            strokeDashoffset={25}
-            transform="rotate(317, 400, 400)"
-            opacity={0.35}
-          />
-          <circle
-            r={595}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="11 29"
-            strokeDashoffset={25}
-            transform="rotate(25, 400, 400)"
-            opacity={0.33}
-          />
-          <circle
-            r={560}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="37 21"
-            strokeDashoffset={25}
-            transform="rotate(206, 400, 400)"
-            opacity={0.31}
-          />
-          <circle
-            r={525}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="21 10"
-            strokeDashoffset={25}
-            transform="rotate(322, 400, 400)"
-            opacity={0.3}
-          />
-          <circle
-            r={490}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="15 24"
-            strokeDashoffset={25}
-            transform="rotate(352, 400, 400)"
-            opacity={0.28}
-          />
-          <circle
-            r={455}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="21 18"
-            strokeDashoffset={25}
-            transform="rotate(341, 400, 400)"
-            opacity={0.26}
-          />
-          <circle
-            r={420}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="17 26"
-            strokeDashoffset={25}
-            transform="rotate(118, 400, 400)"
-            opacity={0.24}
-          />
-          <circle
-            r={385}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="44 36"
-            strokeDashoffset={25}
-            transform="rotate(87, 400, 400)"
-            opacity={0.23}
-          />
-          <circle
-            r={350}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="21 24"
-            strokeDashoffset={25}
-            transform="rotate(245, 400, 400)"
-            opacity={0.21}
-          />
-          <circle
-            r={315}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="29 26"
-            strokeDashoffset={25}
-            transform="rotate(337, 400, 400)"
-            opacity={0.19}
-          />
-          <circle
-            r={280}
-            cx={400}
-            cy={400}
-            strokeWidth={2}
-            strokeDasharray="23 25"
-            strokeDashoffset={25}
-            transform="rotate(251, 400, 400)"
-            opacity={0.17}
-          />
-          <circle
-            r={245}
-            cx={400}
-            cy={400}
-            strokeWidth={1}
-            strokeDasharray="27 26"
-            strokeDashoffset={25}
-            transform="rotate(340, 400, 400)"
-            opacity={0.16}
-          />
-          <circle
-            r={210}
-            cx={400}
-            cy={400}
-            strokeWidth={1}
-            strokeDasharray="49 49"
-            strokeDashoffset={25}
-            transform="rotate(357, 400, 400)"
-            opacity={0.14}
-          />
-          <circle
-            r={175}
-            cx={400}
-            cy={400}
-            strokeWidth={1}
-            strokeDasharray="30 54"
-            strokeDashoffset={25}
-            transform="rotate(196, 400, 400)"
-            opacity={0.12}
-          />
-          <circle
-            r={140}
-            cx={400}
-            cy={400}
-            strokeWidth={1}
-            strokeDasharray="39 26"
-            strokeDashoffset={25}
-            transform="rotate(279, 400, 400)"
-            opacity={0.1}
-          />
-          <circle
-            r={105}
-            cx={400}
-            cy={400}
-            strokeWidth={1}
-            strokeDasharray="53 53"
-            strokeDashoffset={25}
-            transform="rotate(77, 400, 400)"
-            opacity={0.09}
-          />
-          <circle
-            r={70}
-            cx={400}
-            cy={400}
-            strokeWidth={1}
-            strokeDasharray="25 49"
-            strokeDashoffset={25}
-            transform="rotate(206, 400, 400)"
-            opacity={0.07}
-          />
-          <circle
-            r={35}
-            cx={400}
-            cy={400}
-            strokeWidth={1}
-            strokeDasharray="41 51"
-            strokeDashoffset={25}
-            transform="rotate(335, 400, 400)"
-            opacity={0.05}
-          />
+          {Array.from({ length: 40 }).map((_, index) => {
+            // Adjusted radius spacing for 40 circles
+            const radius = 1925 - index * 45;
+
+            // Calculate opacity - reduced overall opacity
+            const normalizedIndex = (40 - index) / 40; // 1 to 0
+            const opacity = 0.6 * normalizedIndex; // Reduced from 0.95 to 0.6
+
+            // Adjust stroke width ranges for 40 circles
+            const strokeWidth =
+              index < 13 ? 5 : index < 26 ? 4 : index < 33 ? 3 : 2;
+
+            // Pure dot pattern (equal dot size and space)
+            const dotSize = strokeWidth;
+            const spaceSize = dotSize * 6; // Increased spacing for more distinct dots
+
+            return (
+              <circle
+                key={index}
+                r={radius}
+                cx={400}
+                cy={400}
+                strokeWidth={strokeWidth}
+                strokeDasharray={`${dotSize} ${spaceSize}`}
+                transform={`rotate(${index * 3}, 400, 400)`}
+                opacity={opacity}
+              />
+            );
+          })}
         </g>
       </svg>
 
@@ -1158,12 +633,12 @@ const NebulaNest = () => {
               id="vvvortex-grad"
             >
               <stop
-                stopColor="hsl(1.4, 100%, 67%)"
+                stopColor="hsl(36, 100%, 65%)"
                 stopOpacity={1}
                 offset="0%"
               />
               <stop
-                stopColor="hsl(167, 52%, 78%)"
+                stopColor="hsl(43, 90%, 45%)"
                 stopOpacity={1}
                 offset="100%"
               />
@@ -1182,7 +657,7 @@ const NebulaNest = () => {
           />
 
           {/* Rotating rune circles */}
-          <g transform="translate(490, 490)">
+          {/* <g transform="translate(490, 490)">
             <circle
               ref={innerRuneRef}
               r="460"
@@ -1201,7 +676,7 @@ const NebulaNest = () => {
               opacity="0"
               filter="url(#runeCircle)"
             />
-          </g>
+          </g> */}
 
           {/* Main statue group */}
           <g
@@ -1338,7 +813,7 @@ const NebulaNest = () => {
           </g>
 
           {/* Glowing rim */}
-          <circle
+          {/* <circle
             ref={glowingRimRef}
             cx="490"
             cy="490"
@@ -1347,7 +822,7 @@ const NebulaNest = () => {
             stroke="#FFD700"
             strokeWidth="3"
             opacity="0"
-          />
+          /> */}
         </svg>
       </div>
 
