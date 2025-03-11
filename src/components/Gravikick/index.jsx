@@ -18,6 +18,25 @@ const Gravikick = () => {
   const playerBodyRef = useRef(null); // Player body fill elements
   const playerLineRef = useRef(null); // Player outline elements
   const extraLineRef = useRef(null); // Decorative line elements
+  const textElements = useRef([]);
+  const highlightedText = useRef([]);
+
+  // Add this near the top of the file, after other constants
+  const TEXT_ANIMATION_CONFIG = {
+    lines: [
+      { start: 0.2, peak: 0.35, end: 0.7 },
+      { start: 0.3, peak: 0.45, end: 0.8 },
+      { start: 0.4, peak: 0.55, end: 0.9 },
+    ],
+  };
+
+  const createGradientStyle = (progress) => {
+    const hue = (progress * 720) % 360;
+    return `linear-gradient(${progress * 720}deg, 
+      hsl(${hue}, 100%, 50%) 0%, 
+      hsl(${(hue + 120) % 360}, 100%, 50%) 50%, 
+      hsl(${(hue + 240) % 360}, 100%, 50%) 100%)`;
+  };
 
   useGSAP(() => {
     // Register ScrollTrigger plugin for scroll-based animations
@@ -335,6 +354,124 @@ const Gravikick = () => {
         onUpdate: () => gsap.set(playerLineRef.current, { opacity: 0 }),
       },
     });
+
+    const words = textElements.current;
+    const highlighted = highlightedText.current;
+
+    // Set initial state for text elements
+    gsap.set(words, {
+      opacity: 0,
+      y: 100,
+      rotationX: -90,
+      scale: 0.8,
+      transformOrigin: "center center",
+    });
+
+    // Create text animation timeline
+    const textTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top bottom",
+        end: "90% bottom",
+        scrub: 0.3,
+        onLeave: () => {
+          gsap.to(words, {
+            opacity: 0,
+            y: -50,
+            rotationX: 90,
+            scale: 0.8,
+            duration: 0.3,
+            stagger: {
+              amount: 0.2,
+              from: "start",
+            },
+            ease: "power2.in",
+          });
+        },
+        onEnterBack: () => {
+          gsap.to(words, {
+            opacity: 1,
+            y: 0,
+            rotationX: 0,
+            scale: 1,
+            duration: 0.3,
+            stagger: {
+              amount: 0.2,
+              from: "end",
+            },
+            ease: "power2.out",
+          });
+        },
+        onUpdate: (self) => {
+          const progress = self.progress;
+
+          words.forEach((word, i) => {
+            const lineIndex = Math.floor(i / 5);
+            const wordInLineIndex = i % 5;
+            const line = TEXT_ANIMATION_CONFIG.lines[lineIndex];
+
+            if (!line) return;
+
+            const wordDelay = wordInLineIndex * 0.04;
+            const wordStart = line.start + wordDelay;
+            const wordPeak = line.peak + wordDelay;
+            const wordEnd = line.end + wordDelay;
+
+            let opacity = 0;
+            let y = 100;
+            let rotationX = -90;
+            let scale = 0.8;
+
+            if (progress < wordStart) {
+              opacity = 0;
+              y = 100;
+              rotationX = -90;
+              scale = 0.8;
+            } else if (progress < wordPeak) {
+              const entryProgress =
+                (progress - wordStart) / (wordPeak - wordStart);
+              const easeProgress = gsap.parseEase("power2.out")(entryProgress);
+              opacity = easeProgress;
+              y = 100 * (1 - easeProgress);
+              rotationX = -90 * (1 - easeProgress);
+              scale = 0.8 + 0.2 * easeProgress;
+            } else if (progress < wordEnd) {
+              opacity = 1;
+              y = 0;
+              rotationX = 0;
+              scale = 1;
+            } else {
+              const exitProgress = (progress - wordEnd) / 0.1;
+              const easeExitProgress =
+                gsap.parseEase("power2.in")(exitProgress);
+              opacity = Math.max(0, 1 - easeExitProgress);
+              y = -50 * easeExitProgress;
+              rotationX = 90 * easeExitProgress;
+              scale = 1 - 0.2 * easeExitProgress;
+            }
+
+            gsap.to(word, {
+              opacity,
+              y,
+              rotationX,
+              scale,
+              duration: 0.2,
+              ease: "power2.inOut",
+            });
+
+            if (highlighted[i]) {
+              gsap.to(highlighted[i], {
+                backgroundImage: createGradientStyle(progress * 2),
+                duration: 0.1,
+                ease: "none",
+              });
+            }
+          });
+        },
+      },
+    });
+
+    return () => textTl.kill();
   }, []);
 
   return (
@@ -1498,7 +1635,6 @@ const Gravikick = () => {
             <polygon points="1880.37 1633.34 2198.37 1737.84 2038.87 1586.34 1880.37 1633.34" />
             <polygon points="2058.87 1580.84 2158.37 1661.34 2030.87 1663.84 2058.87 1580.84" />
             <polygon points="2158.37 1661.34 2220.37 1719.84 2114.87 1845.84 2158.37 1661.34" />
-            <polygon points="1730.87 1617.34 1770.87 1649.84 1803.87 1538.34 1730.87 1617.34" />
             <polygon points="1766.37 1639.34 1854.87 1721.34 1831.54 1561.51 1766.37 1639.34" />
             <polygon points="1865.37 1681.84 2115.87 1845.34 1903.37 1564.34 1865.37 1681.84" />
             <polygon points="1854.87 1721.34 1885.37 1694.84 1865.37 1681.84 1854.87 1721.34" />
@@ -1614,6 +1750,58 @@ const Gravikick = () => {
             <polygon points="1850.43 515.87 1943.96 598.49 2055.84 607.16 1850.43 515.87" />
           </g>
         </svg>
+      </div>
+
+      {/* Message section at the bottom */}
+      <div className="fixed bottom-[5vh] left-1/2 -translate-x-1/2 text-center w-[95vw] max-w-[1000px] z-10 p-4 sm:p-8 [perspective:1000px]">
+        <div className="relative my-2 sm:my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d] flex justify-center flex-wrap gap-2">
+          <span
+            ref={(el) => (textElements.current[0] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            Sports
+          </span>
+          <span
+            ref={(el) => (textElements.current[1] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            keep
+          </span>
+          <span
+            ref={(el) => (textElements.current[2] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            me
+          </span>
+          <span
+            ref={(el) => (textElements.current[3] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            <span
+              ref={(el) => (highlightedText.current[3] = el)}
+              className="inline-block bg-clip-text [-webkit-background-clip:text] text-transparent [will-change:background]"
+            >
+              Energized
+            </span>
+          </span>
+          <span
+            ref={(el) => (textElements.current[4] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            and
+          </span>
+          <span
+            ref={(el) => (textElements.current[5] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            <span
+              ref={(el) => (highlightedText.current[5] = el)}
+              className="inline-block bg-clip-text [-webkit-background-clip:text] text-transparent [will-change:background]"
+            >
+              Inspired
+            </span>
+          </span>
+        </div>
       </div>
     </div>
   );
