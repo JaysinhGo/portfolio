@@ -40,7 +40,7 @@ const NebulaNest = () => {
       end: "bottom bottom",
       toggleActions: "play reverse play reverse",
       onToggle: ({ isActive }) => {
-        gsap.set(containerRef.current, {
+        gsap.set(statueofunityRef.current, {
           opacity: isActive ? 1 : 0,
         });
       },
@@ -501,7 +501,7 @@ const NebulaNest = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-screen h-[1200vh] opacity-0">
+    <div ref={containerRef} className="relative w-screen h-[1200vh]">
       {/* Add cosmic vortex SVG first */}
       <svg
         ref={cosmicVortexRef}
