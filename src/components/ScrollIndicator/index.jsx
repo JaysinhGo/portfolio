@@ -205,11 +205,13 @@ function ScrollIndicator() {
         <button
           ref={playButtonRef}
           onClick={togglePlay}
-          className="transform transition-all duration-300 hover:scale-105 opacity-0 z-11 cursor-pointer 
+          className="transform transition-all duration-300 
+            hover:scale-105 opacity-0 z-11 cursor-pointer 
             hover:-translate-y-0.5 active:translate-y-0.5 
             shadow-[0_0_15px_rgba(var(--scroll-indicator-fill-rgb),0.3)] 
             hover:shadow-[0_0_20px_rgba(var(--scroll-indicator-fill-rgb),0.5)]
-            active:shadow-[0_0_10px_rgba(var(--scroll-indicator-fill-rgb),0.2)]"
+            active:shadow-[0_0_10px_rgba(var(--scroll-indicator-fill-rgb),0.2)]
+            relative"
           aria-label={isPlaying ? "Pause music" : "Play music"}
         >
           <svg
@@ -217,14 +219,15 @@ function ScrollIndicator() {
               border-[var(--scroll-indicator-fill)] border-[1px]
               bg-[rgba(var(--scroll-indicator-fill-rgb),0.1)]
               backdrop-blur-sm
-              shadow-inner
               transition-all duration-300
-              hover:bg-[rgba(var(--scroll-indicator-fill-rgb),0.2)]"
+              hover:bg-[rgba(var(--scroll-indicator-fill-rgb),0.2)]
+              [filter:drop-shadow(0_2px_4px_rgba(0,0,0,0.3))]
+              hover:[filter:drop-shadow(0_4px_8px_rgba(0,0,0,0.4))]"
             viewBox="0 0 496.158 496.158"
             xmlns="http://www.w3.org/2000/svg"
           >
             {isPlaying ? (
-              <g>
+              <g transform="translate(0, 20)">
                 <path
                   className="fill-[var(--scroll-indicator-fill-rgba)]"
                   d="M496.158 248.085c0-137.022-111.068-248.082-248.074-248.082C111.07.003 0 111.063 0 248.085c0 137.001 111.07 248.07 248.084 248.07 137.006 0 248.074-111.069 248.074-248.07z"
@@ -235,39 +238,15 @@ function ScrollIndicator() {
                 </g>
               </g>
             ) : (
-              <g>
+              <g transform="translate(0, -20)">
                 <path
                   className="fill-[var(--scroll-indicator-fill-rgba)]"
                   d="M496.158 248.085c0-137.022-111.068-248.082-248.074-248.082C111.07.003 0 111.063 0 248.085c0 137.001 111.07 248.07 248.084 248.07 137.006 0 248.074-111.069 248.074-248.07z"
                 />
-                <g fill="#DFF2F4">
-                  <path d="M73.412 251.075c0 3.313-2.686 6-6 6H56.746c-3.314 0-6-2.687-6-6v-6.5c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v6.5z" />
-                  <path d="M104.412 266.825c0 3.313-2.686 6-6 6H87.746c-3.314 0-6-2.687-6-6v-37.5c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v37.5z" />
-                </g>
-                <g fill="#B5E3EA">
-                  <path d="M135.412 274.579c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-53c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v53z" />
-                  <path d="M166.412 290.079c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-84c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v84z" />
-                </g>
-                <g fill="#A3D5E0">
-                  <path d="M197.412 321.079c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-146c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v146z" />
-                  <path d="M228.412 336.579c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-177c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v177z" />
-                </g>
                 <path
-                  fill="#8EC5CE"
-                  d="M259.412 383.079c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-270c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v270z"
+                  fill="#DFF2F4"
+                  d="M315.147 174.853c-4.6-1.8-9.8-1.3-14 1.4l-90 57.9c-2.8 1.8-4.5 4.9-4.5 8.2v96.4c-6.1-3.1-13.4-3.9-20.9-1.9-16.6 4.4-27.6 20.3-24.5 35.5 3.1 15.2 19 24 35.6 19.6 16.6-4.4 27.6-20.3 24.5-35.5-.2-1-.5-2-.8-3v-87.8l80-51.5v71.9c-6.1-3.1-13.4-3.9-20.9-1.9-16.6 4.4-27.6 20.3-24.5 35.5 3.1 15.2 19 24 35.6 19.6 16.6-4.4 27.6-20.3 24.5-35.5-.2-1-.5-2-.8-3v-120c0-3.3-1.7-6.4-4.5-8.2-4.5-2.9-9.5-3.6-14.2-1.8z"
                 />
-                <g fill="#A3D5E0">
-                  <path d="M290.412 321.079c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-146c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v146z" />
-                  <path d="M321.412 290.079c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-84c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v84z" />
-                </g>
-                <g fill="#B5E3EA">
-                  <path d="M352.412 305.579c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-115c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v115z" />
-                  <path d="M383.412 274.575c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-53c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v53z" />
-                </g>
-                <g fill="#DFF2F4">
-                  <path d="M445.412 251.261c0 3.314-2.686 6-6 6h-10.666c-3.314 0-6-2.686-6-6v-6.5c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v6.5z" />
-                  <path d="M414.412 259.079c0 3.313-2.686 6-6 6h-10.666c-3.314 0-6-2.687-6-6v-22c0-3.313 2.686-6 6-6h10.666c3.314 0 6 2.687 6 6v22z" />
-                </g>
               </g>
             )}
           </svg>
