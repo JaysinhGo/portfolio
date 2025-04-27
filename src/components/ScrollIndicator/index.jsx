@@ -17,6 +17,7 @@ function ScrollIndicator() {
   const [isPlaying, setIsPlaying] = useState(false);
   const playerRef = useRef(null);
   const playButtonRef = useRef(null);
+  const playButtonContainerRef = useRef(null);
 
   const handleDownloadCV = () => window.open(resumePDF, "_blank");
 
@@ -78,6 +79,7 @@ function ScrollIndicator() {
     const track = trackRectRef.current;
     const container = scrollContainerRef.current;
     const playButton = playButtonRef.current;
+    const playButtonContainer = playButtonContainerRef.current;
     if (!svg || !circle || !track || !container) return;
 
     gsap.set(svg, { transformOrigin: "center", scale: 1 });
@@ -113,16 +115,44 @@ function ScrollIndicator() {
       scale: 0,
     });
 
-    gsap.to(playButton, {
+    // Initial states
+    gsap.set(playButtonContainer, {
+      top: -100, // Start from above viewport
+      right: -100, // Start from outside right
+    });
+    gsap.set(playButton, {
+      transformOrigin: "center",
+      scale: 0,
+      opacity: 0,
+    });
+
+    // Create a timeline for coordinated animation
+    const tl = gsap.timeline({
       scrollTrigger: {
         trigger: container,
         start: "top top",
-        end: "bottom bottom",
-        scrub: 0.4,
+        end: "10% top", // Shorter distance for quicker animation
+        scrub: true,
+        toggleActions: "play none none reverse",
       },
-      scale: 1,
-      opacity: 1,
     });
+
+    // Add animations to timeline
+    tl.to(playButtonContainer, {
+      top: 32,
+      right: 32,
+      duration: 1,
+      ease: "power2.out",
+    }).to(
+      playButton,
+      {
+        scale: 1,
+        opacity: 1,
+        duration: 1,
+        ease: "power2.out",
+      },
+      "<"
+    ); // Start at same time as container animation
 
     gsap.from(arrowRef.current, {
       y: -6,
@@ -201,17 +231,16 @@ function ScrollIndicator() {
         </p>
       </div>
 
-      <div className="fixed top-8 right-8 z-11">
+      <div ref={playButtonContainerRef} className="fixed top-0 right-0 z-11">
         <button
           ref={playButtonRef}
           onClick={togglePlay}
-          className="transform transition-all duration-300 
+          className="transform transition-all duration-300
             hover:scale-105 opacity-0 z-11 cursor-pointer 
             hover:-translate-y-0.5 active:translate-y-0.5 
             shadow-[0_0_15px_rgba(var(--scroll-indicator-fill-rgb),0.3)] 
             hover:shadow-[0_0_20px_rgba(var(--scroll-indicator-fill-rgb),0.5)]
-            active:shadow-[0_0_10px_rgba(var(--scroll-indicator-fill-rgb),0.2)]
-            relative"
+            active:shadow-[0_0_10px_rgba(var(--scroll-indicator-fill-rgb),0.2)]"
           aria-label={isPlaying ? "Pause music" : "Play music"}
         >
           <svg
