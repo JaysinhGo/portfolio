@@ -4,8 +4,14 @@
 :root {
   --animate-twinkle: move-twink-back 200s linear infinite;
   --animate-clouds: move-clouds-back 700s linear infinite;
-  --scroll-indicator-fill: #f06;
   --scroll-indicator-fill-rgba: rgba(255, 0, 102, 0.2);
+  --scroll-indicator-fill: #f06;
+  --scroll-indicator-shade-10: #e6005c;
+  --scroll-indicator-shade-20: #cc0052;
+  --scroll-indicator-shade-40: #99003d;
+  --scroll-indicator-shade-60: #660029;
+  --scroll-indicator-shade-80: #330014;
+  --scroll-indicator-white-replacement: #181818;
 }
 
 @keyframes move-twink-back {

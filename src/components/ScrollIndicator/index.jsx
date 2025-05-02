@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import resumePDF from "../../assets/JaysinhGohil-LeadWebDeveloper.pdf";
+import MusicIndicator from "./MusicIndicator";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -206,6 +207,9 @@ function ScrollIndicator() {
           />
         </svg>
       </div>
+      <div className="fixed top-0 right-0 items-center justify-center gap-2 mt-6 mr-6 z-11">
+        <MusicIndicator />
+      </div>
       <div
         ref={downloadCv}
         onClick={handleDownloadCV}
@@ -229,57 +233,6 @@ function ScrollIndicator() {
         <p className="text-24 font-normal text-white origin-center whitespace-nowrap transition-[filter,text-shadow] duration-300">
           Resume
         </p>
-      </div>
-
-      <div ref={playButtonContainerRef} className="fixed top-0 right-0 z-11">
-        <button
-          ref={playButtonRef}
-          onClick={togglePlay}
-          className="transform transition-all duration-300
-            hover:scale-105 opacity-0 z-11 cursor-pointer 
-            hover:-translate-y-0.5 active:translate-y-0.5 
-            shadow-[0_0_15px_rgba(var(--scroll-indicator-fill-rgb),0.3)] 
-            hover:shadow-[0_0_20px_rgba(var(--scroll-indicator-fill-rgb),0.5)]
-            active:shadow-[0_0_10px_rgba(var(--scroll-indicator-fill-rgb),0.2)]"
-          aria-label={isPlaying ? "Pause music" : "Play music"}
-        >
-          <svg
-            className="w-8 h-8 rounded-full 
-              border-[var(--scroll-indicator-fill)] border-[1px]
-              bg-[rgba(var(--scroll-indicator-fill-rgb),0.1)]
-              backdrop-blur-sm
-              transition-all duration-300
-              hover:bg-[rgba(var(--scroll-indicator-fill-rgb),0.2)]
-              [filter:drop-shadow(0_2px_4px_rgba(0,0,0,0.3))]
-              hover:[filter:drop-shadow(0_4px_8px_rgba(0,0,0,0.4))]"
-            viewBox="0 0 496.158 496.158"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {isPlaying ? (
-              <g transform="translate(0, 20)">
-                <path
-                  className="fill-[var(--scroll-indicator-fill-rgba)]"
-                  d="M496.158 248.085c0-137.022-111.068-248.082-248.074-248.082C111.07.003 0 111.063 0 248.085c0 137.001 111.07 248.07 248.084 248.07 137.006 0 248.074-111.069 248.074-248.07z"
-                />
-                <g fill="#DFF2F4">
-                  <rect x="175" y="175" width="50" height="150" rx="10" />
-                  <rect x="275" y="175" width="50" height="150" rx="10" />
-                </g>
-              </g>
-            ) : (
-              <g transform="translate(0, -20)">
-                <path
-                  className="fill-[var(--scroll-indicator-fill-rgba)]"
-                  d="M496.158 248.085c0-137.022-111.068-248.082-248.074-248.082C111.07.003 0 111.063 0 248.085c0 137.001 111.07 248.07 248.084 248.07 137.006 0 248.074-111.069 248.074-248.07z"
-                />
-                <path
-                  fill="#DFF2F4"
-                  d="M315.147 174.853c-4.6-1.8-9.8-1.3-14 1.4l-90 57.9c-2.8 1.8-4.5 4.9-4.5 8.2v96.4c-6.1-3.1-13.4-3.9-20.9-1.9-16.6 4.4-27.6 20.3-24.5 35.5 3.1 15.2 19 24 35.6 19.6 16.6-4.4 27.6-20.3 24.5-35.5-.2-1-.5-2-.8-3v-87.8l80-51.5v71.9c-6.1-3.1-13.4-3.9-20.9-1.9-16.6 4.4-27.6 20.3-24.5 35.5 3.1 15.2 19 24 35.6 19.6 16.6-4.4 27.6-20.3 24.5-35.5-.2-1-.5-2-.8-3v-120c0-3.3-1.7-6.4-4.5-8.2-4.5-2.9-9.5-3.6-14.2-1.8z"
-                />
-              </g>
-            )}
-          </svg>
-        </button>
       </div>
       <div id="youtube-player" style={{ display: "none" }} />
     </div>

@@ -10,7 +10,7 @@ function App() {
   // Adjust smoothness:
   // Lower values = smoother (0.05 - 0.1)
   // Higher values = faster (0.2 - 0.5)
-  useSmoothScroll(5);
+  useSmoothScroll(3);
 
   return (
     <>
