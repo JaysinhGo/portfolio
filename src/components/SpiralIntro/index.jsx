@@ -90,8 +90,8 @@ const SpiralIntro = () => {
       fadeIn: gsap.timeline({
         scrollTrigger: {
           trigger: scrollContainerRef.current,
-          start: "-10% top",
-          end: "20% bottom",
+          start: "top bottom",
+          end: "bottom top",
           scrub: 1,
         },
       }),
@@ -100,8 +100,8 @@ const SpiralIntro = () => {
       main: gsap.timeline({
         scrollTrigger: {
           trigger: scrollContainerRef.current,
-          start: "10% top",
-          end: "200% bottom",
+          start: "top bottom",
+          end: "bottom top",
           scrub: 0.3,
           onUpdate: (self) => {
             if (self.progress <= 0) return;
@@ -164,7 +164,7 @@ const SpiralIntro = () => {
         scrollTrigger: {
           trigger: scrollContainerRef.current,
           start: "10% top",
-          end: "90% bottom",
+          end: "bottom bottom",
           scrub: 1,
           onUpdate: (self) => {
             const progress = self.progress;
@@ -256,7 +256,7 @@ const SpiralIntro = () => {
   }, []);
 
   return (
-    <div ref={scrollContainerRef} className="relative w-screen h-[2000vh]">
+    <div ref={scrollContainerRef} className="relative w-screen h-[1200vh]">
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
         <svg
           ref={svgRef}

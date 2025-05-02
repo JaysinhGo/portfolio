@@ -11,7 +11,7 @@ import "lenis/dist/lenis.css"; // Optional but recommended
 function useLenisSmoothScroll() {
   useEffect(() => {
     const lenis = new Lenis({
-      lerp: 0.5, // 0.1-0.2 is smooth and fast; tweak as needed
+      lerp: 0.3, // 0.1-0.2 is smooth and fast; tweak as needed
       smoothWheel: true,
       smoothTouch: true, // set to true if you want smooth on touch devices
       autoRaf: true, // Let Lenis handle requestAnimationFrame automatically

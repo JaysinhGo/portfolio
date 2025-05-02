@@ -1,7 +1,7 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 import resumePDF from "../../assets/JaysinhGohil-LeadWebDeveloper.pdf";
 import MusicIndicator from "./MusicIndicator";
 
@@ -14,77 +14,18 @@ function ScrollIndicator() {
   const trackRectRef = useRef(null);
   const arrowRef = useRef(null);
   const downloadCv = useRef(null);
-  const [player, setPlayer] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const playerRef = useRef(null);
-  const playButtonRef = useRef(null);
-  const playButtonContainerRef = useRef(null);
+  const musicRef = useRef(null);
 
   const handleDownloadCV = () => window.open(resumePDF, "_blank");
-
-  useEffect(() => {
-    // Load YouTube IFrame API
-    const tag = document.createElement("script");
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName("script")[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    // Initialize YouTube player when API is ready
-    window.onYouTubeIframeAPIReady = () => {
-      playerRef.current = new window.YT.Player("youtube-player", {
-        height: "0",
-        width: "0",
-        videoId: "6lDEyKA5I40", // Your YouTube video ID
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          disablekb: 1,
-          fs: 0,
-          rel: 0,
-        },
-        events: {
-          onReady: (event) => {
-            setPlayer(event.target);
-          },
-          onStateChange: (event) => {
-            setIsPlaying(event.data === window.YT.PlayerState.PLAYING);
-          },
-          onError: (error) => {
-            console.error("YouTube player error:", error);
-            setIsPlaying(false);
-          },
-        },
-      });
-    };
-
-    return () => {
-      if (playerRef.current) {
-        playerRef.current.destroy();
-      }
-    };
-  }, []);
-
-  const togglePlay = () => {
-    if (!player) return;
-
-    if (isPlaying) {
-      player.pauseVideo();
-    } else {
-      player.playVideo();
-    }
-  };
 
   useGSAP(() => {
     const svg = svgRef.current;
     const circle = circleRef.current;
     const track = trackRectRef.current;
     const container = scrollContainerRef.current;
-    const playButton = playButtonRef.current;
-    const playButtonContainer = playButtonContainerRef.current;
     if (!svg || !circle || !track || !container) return;
 
     gsap.set(svg, { transformOrigin: "center", scale: 1 });
-    gsap.set(playButton, { transformOrigin: "center", scale: 0, opacity: 0 });
 
     // Animate dot movement
     gsap.to(circle, {
@@ -110,50 +51,11 @@ function ScrollIndicator() {
       scrollTrigger: {
         trigger: container,
         start: "top top",
-        end: "bottom bottom",
+        end: "bottom top",
         scrub: 0.4,
       },
       scale: 0,
     });
-
-    // Initial states
-    gsap.set(playButtonContainer, {
-      top: -100, // Start from above viewport
-      right: -100, // Start from outside right
-    });
-    gsap.set(playButton, {
-      transformOrigin: "center",
-      scale: 0,
-      opacity: 0,
-    });
-
-    // Create a timeline for coordinated animation
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: container,
-        start: "top top",
-        end: "10% top", // Shorter distance for quicker animation
-        scrub: true,
-        toggleActions: "play none none reverse",
-      },
-    });
-
-    // Add animations to timeline
-    tl.to(playButtonContainer, {
-      top: 32,
-      right: 32,
-      duration: 1,
-      ease: "power2.out",
-    }).to(
-      playButton,
-      {
-        scale: 1,
-        opacity: 1,
-        duration: 1,
-        ease: "power2.out",
-      },
-      "<"
-    ); // Start at same time as container animation
 
     gsap.from(arrowRef.current, {
       y: -6,
@@ -168,17 +70,51 @@ function ScrollIndicator() {
       scrollTrigger: {
         trigger: container,
         start: "top top",
-        end: "bottom bottom",
+        end: "bottom top",
         scrub: 0.4,
         toggleActions: "play reverse play reverse",
       },
       y: 100,
       opacity: 0,
     });
-  });
+
+    // Animate SVG and Resume both ways
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container,
+        start: "top top",
+        end: "bottom top",
+        scrub: true,
+      },
+    });
+
+    tl.to(svg, { scale: 0, autoAlpha: 0, ease: "power2.out" }, 0).to(
+      downloadCv.current,
+      { y: 100, autoAlpha: 0, ease: "power2.out" },
+      0
+    );
+
+    // Animate music button IN only (no reverse)
+    gsap.fromTo(
+      musicRef.current,
+      { scale: 0, autoAlpha: 0 },
+      {
+        scale: 1,
+        autoAlpha: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: container,
+          start: "top top",
+          end: "bottom top",
+          toggleActions: "play none none none", // Only play, no reverse
+          // No scrub!
+        },
+      }
+    );
+  }, []);
 
   return (
-    <div ref={scrollContainerRef} className="relative w-screen h-[200vh]">
+    <div ref={scrollContainerRef} className="relative w-screen h-[100vh]">
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-2">
         <svg
           ref={svgRef}
@@ -186,7 +122,7 @@ function ScrollIndicator() {
           height="90"
           viewBox="0 0 50 130"
           xmlns="http://www.w3.org/2000/svg"
-          style={{ willChange: "transform" }} // GPU optimization
+          style={{ willChange: "transform" }}
         >
           <rect
             ref={trackRectRef}
@@ -206,9 +142,6 @@ function ScrollIndicator() {
             r="8"
           />
         </svg>
-      </div>
-      <div className="fixed top-0 right-0 items-center justify-center gap-2 mt-6 mr-6 z-11">
-        <MusicIndicator />
       </div>
       <div
         ref={downloadCv}
@@ -234,7 +167,9 @@ function ScrollIndicator() {
           Resume
         </p>
       </div>
-      <div id="youtube-player" style={{ display: "none" }} />
+      <div ref={musicRef} className="fixed top-8 right-8 z-20">
+        <MusicIndicator />
+      </div>
     </div>
   );
 }
