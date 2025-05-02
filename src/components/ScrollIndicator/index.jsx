@@ -177,7 +177,7 @@ function ScrollIndicator() {
   });
 
   return (
-    <div ref={scrollContainerRef} className="relative w-screen h-[200vh]">
+    <div ref={scrollContainerRef} className="relative w-screen h-[500vh]">
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center gap-2">
         <svg
           ref={svgRef}
