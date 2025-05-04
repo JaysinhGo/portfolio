@@ -204,7 +204,7 @@ const StarCruise = () => {
   return (
     <>
       <div ref={scrollContainerRef} className="relative w-screen">
-        <div className="relative w-screen h-[100vh]"></div>
+        <div className="relative w-screen h-[10vh]"></div>
         <GalacticRide />
         <div ref={shipRiseRef} className="relative w-screen h-[240vh]"></div>
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">

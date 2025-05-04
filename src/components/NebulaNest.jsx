@@ -48,100 +48,77 @@ const NebulaNest = () => {
 
     if (!mainStatueGroupRef.current) return;
 
-    // Cache DOM elements
     const paths = Array.from(
       mainStatueGroupRef.current.querySelectorAll("path")
     );
     const statue = statueofunityRef.current;
 
-    // Initial state configuration
-    const initialState = {
+    // Set initial state
+    gsap.set([statue, paths], {
       opacity: 0,
       scale: 0,
       transformOrigin: "center center",
-    };
-
-    // Set initial states
-    gsap.set([statue, paths], initialState);
+    });
     gsap.set(paths, {
       y: 100,
       filter: "blur(20px) brightness(0)",
     });
 
-    // Main animation timeline
+    // Main timeline
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top bottom",
         end: "bottom bottom",
-        scrub: 0.5,
-        onLeave: () => {
-          gsap.to(statue, {
-            opacity: 0,
-            scale: 0,
-            duration: 0.3,
-            ease: "power2.in",
-          });
-        },
-        onEnterBack: () => {
-          gsap.to(statue, {
-            opacity: 1,
-            scale: 1,
-            duration: 0.3,
-            ease: "power2.out",
-          });
-        },
+        scrub: 1,
       },
     });
 
-    // Animation sequence
-    tl.to(statue, {
-      opacity: 1,
-      scale: 1,
-      duration: 0.5,
-      ease: "power2.out",
-    })
-      .fromTo(
-        paths,
-        {
-          opacity: 0,
-          scale: 0,
-          y: 50,
-          filter: "blur(20px) brightness(0)",
-        },
-        {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          filter: "blur(0px) brightness(1.2)",
-          duration: 1,
-          stagger: {
-            amount: 0.8,
-            from: "center",
-            ease: "power2.out",
-          },
-        },
-        "-=0.3"
-      )
-      // Power surge effect
-      .to(paths, {
-        scale: 1.05,
-        filter: "blur(0px) brightness(1.5)",
-        duration: 0.3,
+    // Animate in: 0% to 50%
+    tl.to(
+      [statue, paths],
+      {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        filter: "blur(0px) brightness(1.2)",
+        duration: 0.5, // 0% to 50%
+        ease: "power2.out",
         stagger: {
-          amount: 0.4,
+          amount: 0.3,
           from: "center",
         },
-      })
-      .to(paths, {
-        scale: 1,
-        filter: "blur(0px) brightness(1.2)",
-        duration: 0.3,
+      },
+      0
+    );
+
+    // Hold: 50% to 80%
+    tl.to(
+      [statue, paths],
+      {
+        // No property changes, just hold the state
+        duration: 0.3, // 50% to 80%
+      },
+      0.5
+    );
+
+    // Animate out: 80% to 100%
+    tl.to(
+      [statue, paths],
+      {
+        opacity: 0,
+        scale: 0,
+        y: 100,
+        filter: "blur(20px) brightness(0)",
+        duration: 0.2, // 80% to 100%
+        ease: "power2.in",
         stagger: {
           amount: 0.2,
           from: "center",
         },
-      });
+      },
+      0.8
+    );
 
     return () => {
       ScrollTrigger.getAll().forEach((t) => t.kill());
@@ -501,7 +478,7 @@ const NebulaNest = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="relative w-screen h-[1000vh]">
+    <div ref={containerRef} className="relative w-screen h-[500vh]">
       {/* Add cosmic vortex SVG first */}
       <svg
         ref={cosmicVortexRef}
