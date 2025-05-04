@@ -15,12 +15,12 @@ const getRandomHSL = () => {
 
 // Dynamic color generator for animation
 const getShiningColor = (index, progress) => {
-  const hue = (index * 15 + progress * 1080) % 360; // Color rotation
-  const shimmer = Math.sin(progress * Math.PI * 15) * 30; // Shimmer effect
-  return `hsl(${hue}, 100%, ${55 + Math.sin(progress * Math.PI * 12) * 20}%)`;
+  const shimmer = Math.sin(progress * Math.PI * 60) * 30;
+  const hue = (index * 15 + progress * 4320 + shimmer) % 360;
+  return `hsl(${hue}, 100%, ${55 + Math.sin(progress * Math.PI * 48) * 20}%)`;
 };
 
-const SpiralIntro = () => {
+const WormholeWelcome = () => {
   // Refs for DOM elements
   const svgRef = useRef(null);
   const circles = useRef([]);
@@ -79,19 +79,23 @@ const SpiralIntro = () => {
             gsap.set(groupRef.current, {
               opacity: isVisible ? 0.8 : 0,
             });
+
             gsap.set(textContainerRef.current, {
               opacity: isVisible ? 1 : 0,
             });
+            if (!isVisible) {
+              circles.current.forEach((circle, i) => {
+                gsap.set(circle, { opacity: 0 });
+              });
+            }
           },
         },
       }),
-
-      // Initial fade in animation
       fadeIn: gsap.timeline({
         scrollTrigger: {
           trigger: scrollContainerRef.current,
           start: "top bottom",
-          end: "bottom top",
+          end: "20% top",
           scrub: 1,
         },
       }),
@@ -158,13 +162,22 @@ const SpiralIntro = () => {
           },
         },
       }),
+      // Final fade out animation
+      fadeOut: gsap.timeline({
+        scrollTrigger: {
+          trigger: scrollContainerRef.current,
+          start: "80% top",
+          end: "100% bottom",
+          scrub: 1,
+        },
+      }),
 
       // Text animation with middle blur
       text: gsap.timeline({
         scrollTrigger: {
           trigger: scrollContainerRef.current,
           start: "10% top",
-          end: "bottom bottom",
+          end: "95% bottom",
           scrub: 1,
           onUpdate: (self) => {
             const progress = self.progress;
@@ -188,7 +201,7 @@ const SpiralIntro = () => {
               yPos = 0;
 
               // Blur only during 40-60% of scroll
-              if (progress >= 0.4 && progress <= 0.7) {
+              if (progress >= 0.35 && progress <= 0.7) {
                 const midPoint = 0.5;
                 const distance = Math.abs(progress - midPoint);
                 const maxDistance = 0.1; // 20% range divided by 2
@@ -213,16 +226,6 @@ const SpiralIntro = () => {
           },
         },
       }),
-
-      // Final fade out animation
-      fadeOut: gsap.timeline({
-        scrollTrigger: {
-          trigger: scrollContainerRef.current,
-          start: "80% top",
-          end: "100% bottom",
-          scrub: 1,
-        },
-      }),
     };
 
     // Setup individual circle animations
@@ -232,14 +235,47 @@ const SpiralIntro = () => {
 
     // Setup group rotation
     animations.main.to(groupRef.current, {
-      rotation: 360 * 8,
+      rotation: 360 * 6,
       transformOrigin: "center center",
       ease: "none",
     });
 
-    // Reverse fade out animation
-    [...circles.current].reverse().forEach((circle, i) => {
-      animations.fadeOut.to(circle, { opacity: 0 }, i * 0.05);
+    const allCircles = circles.current.filter(Boolean);
+    const total = allCircles.length;
+
+    ScrollTrigger.create({
+      trigger: scrollContainerRef.current,
+      start: "top bottom",
+      end: "bottom top",
+      scrub: 1,
+      onUpdate: (self) => {
+        const progress = self.progress;
+        allCircles.forEach((circle, i) => {
+          let opacity = 0;
+          if (progress >= 0 && progress < 0.2) {
+            const local = (progress - 0.0) / 0.2;
+            const threshold = i / total;
+            opacity = local > threshold ? 1 : 0;
+          } else if (progress >= 0.2 && progress < 0.8) {
+            opacity = 1;
+          } else if (progress >= 0.8 && progress <= 1.0) {
+            const local = (progress - 0.8) / 0.2;
+            const threshold = (total - 1 - i) / total;
+            opacity = local < threshold ? 1 : 0;
+          } else {
+            opacity = 0;
+          }
+
+          // Smoothly animate opacity and stroke color
+          gsap.to(circle, {
+            opacity,
+            stroke: getShiningColor(i, progress),
+            duration: 0.2, // adjust for more/less smoothness
+            overwrite: "auto",
+            ease: "power2.out",
+          });
+        });
+      },
     });
 
     return () => {
@@ -256,7 +292,7 @@ const SpiralIntro = () => {
   }, []);
 
   return (
-    <div ref={scrollContainerRef} className="relative w-screen h-[1200vh]">
+    <div ref={scrollContainerRef} className="relative w-screen h-[500vh]">
       <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
         <svg
           ref={svgRef}
@@ -344,4 +380,4 @@ const SpiralIntro = () => {
   );
 };
 
-export default SpiralIntro;
+export default WormholeWelcome;
