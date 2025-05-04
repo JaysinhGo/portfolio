@@ -3,7 +3,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import resumePDF from "./../assets/JaysinhGohil-LeadWebDeveloper.pdf";
-import MusicIndicator from "./MusicIndicator";
+import MusicIndicator from "./musicIndicator";
 
 gsap.registerPlugin(ScrollTrigger);
 

@@ -1,6 +1,6 @@
 import React from "react";
-import NebulaNest from "../NebulaNest";
-import Gravikick from "../Gravikick";
+import NebulaNest from "./NebulaNest";
+import Gravikick from "./Gravikick";
 const GalacticRide = () => {
   return (
     <>

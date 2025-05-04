@@ -1,7 +1,7 @@
 import CosmicBackground from "./components/CosmicBackground";
 import InterScrollar from "./components/InterScrollar";
-import WormholeWelcome from "./components/wormholeWelcome";
-import PranaSphere from "./components/pranaSphere";
+import WormholeWelcome from "./components/WormholeWelcome";
+import PranaSphere from "./components/PranaSphere";
 import StarCruise from "./components/StarCruise";
 import LandscapeBlocker from "./components/LandscapeBlocker";
 import { useEffect } from "react";
