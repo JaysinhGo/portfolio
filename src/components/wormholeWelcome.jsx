@@ -278,6 +278,59 @@ const WormholeWelcome = () => {
       },
     });
 
+    // Restore text animation block
+    ScrollTrigger.create({
+      trigger: scrollContainerRef.current,
+      start: "10% top",
+      end: "95% bottom",
+      scrub: 1,
+      onUpdate: (self) => {
+        const progress = self.progress;
+        let opacity,
+          yPos,
+          blur = 0;
+
+        if (progress < 0.2) {
+          // Entry animation (0-20%)
+          const t = progress / 0.2;
+          opacity = gsap.utils.clamp(0, 1, t);
+          yPos = (1 - t) * 100;
+        } else if (progress > 0.8) {
+          // Exit animation (80-100%)
+          const t = (progress - 0.8) / 0.2;
+          opacity = gsap.utils.clamp(0, 1, 1 - t);
+          yPos = -t * 100;
+        } else {
+          // Middle state (20-80%)
+          opacity = 1;
+          yPos = 0;
+
+          // Blur only during 40-60% of scroll
+          if (progress >= 0.35 && progress <= 0.7) {
+            const midPoint = 0.5;
+            const distance = Math.abs(progress - midPoint);
+            const maxDistance = 0.1; // 20% range divided by 2
+
+            // Calculate blur intensity
+            blur =
+              window.innerWidth < 768
+                ? 20 * (1 - distance / maxDistance)
+                : 50 * (1 - distance / maxDistance); // Max 20px/50px blur based on screen size
+          }
+        }
+
+        // Animate text
+        gsap.to([nameRef.current, titleRef.current], {
+          opacity,
+          y: (i) => (i === 0 ? -yPos : yPos),
+          filter: blur ? `blur(${blur}px)` : "none",
+          duration: 0.2,
+          ease: "power2.out",
+          overwrite: true,
+        });
+      },
+    });
+
     return () => {
       Object.values(animations).forEach((tl) => tl.kill());
     };
