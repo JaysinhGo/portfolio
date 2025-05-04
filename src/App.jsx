@@ -1,7 +1,7 @@
 import CosmicBackground from "./components/CosmicBackground";
-import ScrollIndicator from "./components/ScrollIndicator";
+import InterScrollar from "./components/InterScrollar";
 import WormholeWelcome from "./components/wormholeWelcome";
-import PranaSphere from "./components/PranaSphere";
+import PranaSphere from "./components/pranaSphere";
 import StarCruise from "./components/StarCruise";
 import LandscapeBlocker from "./components/LandscapeBlocker";
 import { useEffect } from "react";
@@ -35,7 +35,7 @@ function App() {
     <>
       <LandscapeBlocker />
       <CosmicBackground />
-      <ScrollIndicator />
+      <InterScrollar />
       <WormholeWelcome />
       <PranaSphere />
       <StarCruise />

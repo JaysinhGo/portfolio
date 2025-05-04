@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
+import ScrollTrigger from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 
 const YOUTUBE_VIDEO_ID = "6lDEyKA5I40"; // Your YouTube video ID
 
@@ -18,6 +20,7 @@ export default function MusicIndicator() {
   const playerRef = useRef(null);
   const planetRef = useRef(null);
   const playIconRef = useRef(null);
+  const ellipseRef = useRef();
 
   useEffect(() => {
     let scriptTag;
@@ -94,26 +97,22 @@ export default function MusicIndicator() {
   }, []);
 
   useEffect(() => {
-    let start = null;
-    let frameId;
-
-    function animate(now) {
-      if (!start) start = now;
-      const progress = ((now - start) / 1000) % 1;
-      if (playIconRef.current) {
-        playIconRef.current.setAttribute("fill", getShiningColor(progress));
+    let frame;
+    const start = Date.now();
+    function animate() {
+      const elapsed = ((Date.now() - start) / 1000) % 1;
+      if (ellipseRef.current) {
+        ellipseRef.current.setAttribute("fill", getShiningColor(elapsed));
       }
-      frameId = requestAnimationFrame(animate);
+      frame = requestAnimationFrame(animate);
     }
-
-    frameId = requestAnimationFrame(animate);
-
-    return () => cancelAnimationFrame(frameId);
+    animate();
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   function getShiningColor(progress) {
     const hue = (progress * 1080) % 360;
-    return `hsl(${hue}, 100%, ${55 + Math.sin(progress * Math.PI * 12) * 20}%)`;
+    return `hsl(${hue}, 100%, 60%)`;
   }
 
   const handleClick = () => {
@@ -131,6 +130,15 @@ export default function MusicIndicator() {
       setIcon("music");
     }
   };
+
+  useGSAP(() => {
+    ScrollTrigger.create({
+      onUpdate: (self) => {
+        const progress = self.progress; // 0 to 1
+        ellipseRef.current.setAttribute("fill", getShiningColor(0, progress));
+      },
+    });
+  }, []);
 
   return (
     <>
@@ -184,11 +192,11 @@ export default function MusicIndicator() {
                 transform="rotate(-30.83 52.32 58.427)"
               />
               <ellipse
+                ref={ellipseRef}
                 cx="51.8"
                 cy="57.52"
                 rx="5.2"
                 ry="3.4"
-                style={{ fill: "var(--scroll-indicator-shade-80)" }}
                 transform="rotate(-30.83 51.79 57.52)"
               />
               <path

@@ -2,12 +2,12 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import resumePDF from "../../assets/JaysinhGohil-LeadWebDeveloper.pdf";
+import resumePDF from "./../assets/JaysinhGohil-LeadWebDeveloper.pdf";
 import MusicIndicator from "./MusicIndicator";
 
 gsap.registerPlugin(ScrollTrigger);
 
-function ScrollIndicator() {
+function InterScrollar() {
   const scrollContainerRef = useRef(null);
   const svgRef = useRef(null);
   const circleRef = useRef(null);
@@ -174,4 +174,4 @@ function ScrollIndicator() {
   );
 }
 
-export default ScrollIndicator;
+export default InterScrollar;
