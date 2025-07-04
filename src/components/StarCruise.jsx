@@ -2,8 +2,10 @@ import React, { useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import GalacticRide from "./GalacticRide";
 import InProgress from "./InProgress";
+import NebulaNest from "./NebulaNest";
+import Gravikick from "./Gravikick";
+import StellarSkills from "./StellarSkills";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -204,9 +206,11 @@ const StarCruise = () => {
   return (
     <>
       <div ref={scrollContainerRef} className="relative w-screen">
-        <div className="relative w-screen h-[10vh]"></div>
-        <GalacticRide />
+        {/* <div className="relative w-screen h-[10vh]"></div> */}
+        <NebulaNest />
+        <Gravikick />
         <div ref={shipRiseRef} className="relative w-screen h-[240vh]"></div>
+        <StellarSkills />
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
           <svg
             ref={spaceShipRef}
