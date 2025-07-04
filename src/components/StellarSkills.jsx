@@ -223,7 +223,7 @@ const StellarSkills = () => {
   );
 
   return (
-    <div ref={containerRef} className="relative w-screen h-[1000vh]">
+    <div ref={containerRef} className="relative w-screen h-[2000vh]">
       <div className="fixed inset-0 flex items-center justify-center">
         {asteroidComponents}
       </div>
