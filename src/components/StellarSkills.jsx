@@ -74,14 +74,20 @@ const StellarSkills = () => {
         // Calculate new sizes for all asteroids
         const newSizes = {};
 
+        // Speed multiplier - increase this value to make movement faster
+        const speedMultiplier = 4; // Increased from 1.0 to 2.5
+
         asteroidEntries.forEach(([tech, config]) => {
           const asteroid = asteroidRefs.current[tech];
           if (!asteroid) return;
 
-          // Calculate progress with delay
-          const techProgress = Math.max(0, progress - config.delay);
+          // Calculate progress with delay and speed multiplier
+          const techProgress = Math.max(
+            0,
+            progress * speedMultiplier - config.delay
+          );
 
-          // Calculate position
+          // Calculate position with increased speed
           const top =
             techProgress * viewportDimensions.maxTop + config.startTop;
           const right =
