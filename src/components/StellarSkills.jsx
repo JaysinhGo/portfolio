@@ -12,6 +12,8 @@ gsap.registerPlugin(ScrollTrigger);
 const StellarSkills = () => {
   const containerRef = useRef(null);
   const asteroidRefs = useRef({});
+  const textElements = useRef([]);
+  const highlightedText = useRef([]);
   const [asteroidSizes, setAsteroidSizes] = useState({});
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isScrollingActive, setIsScrollingActive] = useState(false);
@@ -19,6 +21,22 @@ const StellarSkills = () => {
   const scrollTimeoutRef = useRef(null);
   const lastScrollProgress = useRef(0);
   const animationFrameRef = useRef(null);
+
+  // Text animation configuration - first half of container scroll only
+  const TEXT_ANIMATION_CONFIG = {
+    lines: [
+      { start: 0.0, peak: 0.25, end: 0.5 }, // First half of container scroll
+    ],
+  };
+
+  // Create gradient style for highlighted text
+  const createGradientStyle = (progress) => {
+    const hue = (progress * 720) % 360;
+    return `linear-gradient(${progress * 720}deg, 
+      hsl(${hue}, 100%, 50%) 0%, 
+      hsl(${(hue + 120) % 360}, 100%, 50%) 50%, 
+      hsl(${(hue + 240) % 360}, 100%, 50%) 100%)`;
+  };
 
   // Memoize asteroid configurations to avoid recalculation
   const asteroidEntries = useMemo(() => Object.entries(ASTEROID_CONFIGS), []);
@@ -117,10 +135,21 @@ const StellarSkills = () => {
 
   useGSAP(() => {
     const container = containerRef.current;
+    const words = textElements.current.filter(Boolean);
+    const highlighted = highlightedText.current.filter(Boolean);
     if (!container) return;
 
     // Set initial state - hidden
     gsap.set(container, { opacity: 0 });
+
+    // Set initial state for text elements
+    gsap.set(words, {
+      opacity: 0,
+      y: 100,
+      rotationX: -90,
+      scale: 0.8,
+      transformOrigin: "center center",
+    });
 
     // Set initial positions for all asteroids
     asteroidEntries.forEach(([tech, config]) => {
@@ -132,6 +161,110 @@ const StellarSkills = () => {
           left: "auto",
         });
       }
+    });
+
+    // Create text animation timeline for first half of container scroll only
+    const textTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container,
+        start: "top bottom",
+        end: "50% top", // First half of container scroll
+        scrub: 0.3,
+        onLeave: () => {
+          gsap.to(words, {
+            opacity: 0,
+            y: -50,
+            rotationX: 90,
+            scale: 0.8,
+            duration: 0.3,
+            stagger: {
+              amount: 0.2,
+              from: "start",
+            },
+            ease: "power2.in",
+          });
+        },
+        onEnterBack: () => {
+          gsap.to(words, {
+            opacity: 1,
+            y: 0,
+            rotationX: 0,
+            scale: 1,
+            duration: 0.3,
+            stagger: {
+              amount: 0.2,
+              from: "end",
+            },
+            ease: "power2.out",
+          });
+        },
+        onUpdate: (self) => {
+          const progress = self.progress;
+
+          words.forEach((word, i) => {
+            const lineIndex = 0; // Only one line for this message
+            const wordInLineIndex = i; // Use actual word index
+            const line = TEXT_ANIMATION_CONFIG.lines[lineIndex];
+
+            if (!line) return;
+
+            const wordDelay = wordInLineIndex * 0.04;
+            const wordStart = line.start + wordDelay;
+            const wordPeak = line.peak + wordDelay;
+            const wordEnd = line.end + wordDelay;
+
+            let opacity = 0;
+            let y = 100;
+            let rotationX = -90;
+            let scale = 0.8;
+
+            if (progress < wordStart) {
+              opacity = 0;
+              y = 100;
+              rotationX = -90;
+              scale = 0.8;
+            } else if (progress < wordPeak) {
+              const entryProgress =
+                (progress - wordStart) / (wordPeak - wordStart);
+              const easeProgress = gsap.parseEase("power2.out")(entryProgress);
+              opacity = easeProgress;
+              y = 100 * (1 - easeProgress);
+              rotationX = -90 * (1 - easeProgress);
+              scale = 0.8 + 0.2 * easeProgress;
+            } else if (progress < wordEnd) {
+              opacity = 1;
+              y = 0;
+              rotationX = 0;
+              scale = 1;
+            } else {
+              const exitProgress = (progress - wordEnd) / 0.1;
+              const easeExitProgress =
+                gsap.parseEase("power2.in")(exitProgress);
+              opacity = Math.max(0, 1 - easeExitProgress);
+              y = -50 * easeExitProgress;
+              rotationX = 90 * easeExitProgress;
+              scale = 1 - 0.2 * easeExitProgress;
+            }
+
+            gsap.to(word, {
+              opacity,
+              y,
+              rotationX,
+              scale,
+              duration: 0.2,
+              ease: "power2.inOut",
+            });
+
+            if (highlighted[i]) {
+              gsap.to(highlighted[i], {
+                backgroundImage: createGradientStyle(progress * 2),
+                duration: 0.1,
+                ease: "none",
+              });
+            }
+          });
+        },
+      },
     });
 
     // Visibility animation
@@ -182,6 +315,8 @@ const StellarSkills = () => {
         },
       },
     });
+
+    return () => textTl.kill();
   }, [asteroidEntries, handleScrollUpdate]);
 
   // Cleanup on unmount
@@ -230,6 +365,64 @@ const StellarSkills = () => {
 
   return (
     <div ref={containerRef} className="relative w-screen h-[2000vh]">
+      {/* Message section positioned in top-left corner */}
+      <div className="fixed top-[5vh] left-[5vw] text-left w-[90vw] max-w-[800px] z-10 p-4 sm:p-8 [perspective:1000px]">
+        <div className="relative my-2 sm:my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d] flex flex-wrap gap-2">
+          <span
+            ref={(el) => (textElements.current[0] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            A
+          </span>
+          <span
+            ref={(el) => (textElements.current[1] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            <span
+              ref={(el) => (highlightedText.current[1] = el)}
+              className="inline-block bg-clip-text [-webkit-background-clip:text] text-transparent [will-change:background]"
+            >
+              Decade
+            </span>
+          </span>
+          <span
+            ref={(el) => (textElements.current[2] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            of
+          </span>
+          <span
+            ref={(el) => (textElements.current[3] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            shaping
+          </span>
+          <span
+            ref={(el) => (textElements.current[4] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            the
+          </span>
+          <span
+            ref={(el) => (textElements.current[5] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            <span
+              ref={(el) => (highlightedText.current[5] = el)}
+              className="inline-block bg-clip-text [-webkit-background-clip:text] text-transparent [will-change:background]"
+            >
+              Web
+            </span>
+          </span>
+          <span
+            ref={(el) => (textElements.current[6] = el)}
+            className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            spectrum.
+          </span>
+        </div>
+      </div>
+
       <div className="fixed inset-0 flex items-center justify-center">
         {asteroidComponents}
       </div>
