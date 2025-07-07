@@ -329,11 +329,11 @@ const SkillAsteroid = ({
       {/* Technology Label - only visible when not scrolling */}
       <div
         className={`absolute transform -translate-x-1/2 text-center w-1/2 rounded-full border-2 px-2 py-1 w-[75%] ${
-          isScrollingBackward ? "-top-10 right-[-47%]" : "-bottom-10 left-[27%]"
+          isScrollingBackward ? "-top-9 right-[-47%]" : "-bottom-10 left-[27%]"
         }`}
         style={{
           color: config.color,
-          fontSize: `${Math.max(12, width / 20)}px`,
+          fontSize: `${Math.max(10, width / 30)}px`,
           fontWeight: "600",
           textShadow: "0 0 10px rgba(0,0,0,0.8)",
           whiteSpace: "nowrap",
