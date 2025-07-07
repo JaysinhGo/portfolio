@@ -1103,7 +1103,7 @@ export const ASTEROID_CONFIGS = {
   netlify: {
     color: "#32e6e2",
     startTop: 50,
-    startRight: -80,
+    startRight: -100,
     maxSize: 290,
     delay: 0.75,
     label: "Netlify",
