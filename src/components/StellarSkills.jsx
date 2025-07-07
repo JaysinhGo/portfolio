@@ -14,6 +14,8 @@ const StellarSkills = () => {
   const asteroidRefs = useRef({});
   const textElements = useRef([]);
   const highlightedText = useRef([]);
+  const secondTextElements = useRef([]);
+  const secondHighlightedText = useRef([]);
   const [asteroidSizes, setAsteroidSizes] = useState({});
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isScrollingActive, setIsScrollingActive] = useState(false);
@@ -26,6 +28,13 @@ const StellarSkills = () => {
   const TEXT_ANIMATION_CONFIG = {
     lines: [
       { start: 0.0, peak: 0.25, end: 0.5 }, // First half of container scroll
+    ],
+  };
+
+  // Second text animation configuration - second half of container scroll only
+  const SECOND_TEXT_ANIMATION_CONFIG = {
+    lines: [
+      { start: 0.0, peak: 0.25, end: 0.5 }, // Second half of container scroll (normalized to 0-1)
     ],
   };
 
@@ -93,7 +102,7 @@ const StellarSkills = () => {
         const newSizes = {};
 
         // Speed multiplier - increase this value to make movement faster
-        const speedMultiplier = 4; // Increased from 1.0 to 2.5
+        const speedMultiplier = 2; // Increased from 1.0 to 2.5
 
         asteroidEntries.forEach(([tech, config]) => {
           const asteroid = asteroidRefs.current[tech];
@@ -137,6 +146,8 @@ const StellarSkills = () => {
     const container = containerRef.current;
     const words = textElements.current.filter(Boolean);
     const highlighted = highlightedText.current.filter(Boolean);
+    const secondWords = secondTextElements.current.filter(Boolean);
+    const secondHighlighted = secondHighlightedText.current.filter(Boolean);
     if (!container) return;
 
     // Set initial state - hidden
@@ -144,6 +155,15 @@ const StellarSkills = () => {
 
     // Set initial state for text elements
     gsap.set(words, {
+      opacity: 0,
+      y: 100,
+      rotationX: -90,
+      scale: 0.8,
+      transformOrigin: "center center",
+    });
+
+    // Set initial state for second text elements
+    gsap.set(secondWords, {
       opacity: 0,
       y: 100,
       rotationX: -90,
@@ -267,6 +287,110 @@ const StellarSkills = () => {
       },
     });
 
+    // Create second text animation timeline for second half of container scroll only
+    const secondTextTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: container,
+        start: "35% top", // Start at 35% for longer message
+        end: "90% top", // End at 90%
+        scrub: 0.3,
+        onLeave: () => {
+          gsap.to(secondWords, {
+            opacity: 0,
+            y: -50,
+            rotationX: 90,
+            scale: 0.8,
+            duration: 0.3,
+            stagger: {
+              amount: 0.2,
+              from: "start",
+            },
+            ease: "power2.in",
+          });
+        },
+        onEnterBack: () => {
+          gsap.to(secondWords, {
+            opacity: 1,
+            y: 0,
+            rotationX: 0,
+            scale: 1,
+            duration: 0.3,
+            stagger: {
+              amount: 0.2,
+              from: "end",
+            },
+            ease: "power2.out",
+          });
+        },
+        onUpdate: (self) => {
+          const progress = self.progress;
+
+          secondWords.forEach((word, i) => {
+            const lineIndex = 0; // Only one line for this message
+            const wordInLineIndex = i; // Use actual word index
+            const line = SECOND_TEXT_ANIMATION_CONFIG.lines[lineIndex];
+
+            if (!line) return;
+
+            const wordDelay = wordInLineIndex * 0.04;
+            const wordStart = line.start + wordDelay;
+            const wordPeak = line.peak + wordDelay;
+            const wordEnd = line.end + wordDelay;
+
+            let opacity = 0;
+            let y = 100;
+            let rotationX = -90;
+            let scale = 0.8;
+
+            if (progress < wordStart) {
+              opacity = 0;
+              y = 100;
+              rotationX = -90;
+              scale = 0.8;
+            } else if (progress < wordPeak) {
+              const entryProgress =
+                (progress - wordStart) / (wordPeak - wordStart);
+              const easeProgress = gsap.parseEase("power2.out")(entryProgress);
+              opacity = easeProgress;
+              y = 100 * (1 - easeProgress);
+              rotationX = -90 * (1 - easeProgress);
+              scale = 0.8 + 0.2 * easeProgress;
+            } else if (progress < wordEnd) {
+              opacity = 1;
+              y = 0;
+              rotationX = 0;
+              scale = 1;
+            } else {
+              const exitProgress = (progress - wordEnd) / 0.1;
+              const easeExitProgress =
+                gsap.parseEase("power2.in")(exitProgress);
+              opacity = Math.max(0, 1 - easeExitProgress);
+              y = -50 * easeExitProgress;
+              rotationX = 90 * easeExitProgress;
+              scale = 1 - 0.2 * easeExitProgress;
+            }
+
+            gsap.to(word, {
+              opacity,
+              y,
+              rotationX,
+              scale,
+              duration: 0.2,
+              ease: "power2.inOut",
+            });
+
+            if (secondHighlighted[i]) {
+              gsap.to(secondHighlighted[i], {
+                backgroundImage: createGradientStyle(progress * 2),
+                duration: 0.1,
+                ease: "none",
+              });
+            }
+          });
+        },
+      },
+    });
+
     // Visibility animation
     ScrollTrigger.create({
       trigger: container,
@@ -316,7 +440,10 @@ const StellarSkills = () => {
       },
     });
 
-    return () => textTl.kill();
+    return () => {
+      textTl.kill();
+      secondTextTl.kill();
+    };
   }, [asteroidEntries, handleScrollUpdate]);
 
   // Cleanup on unmount
@@ -364,8 +491,8 @@ const StellarSkills = () => {
   );
 
   return (
-    <div ref={containerRef} className="relative w-screen h-[2000vh]">
-      {/* Message section positioned in top-left corner */}
+    <div ref={containerRef} className="relative w-screen h-[1500vh]">
+      {/* First message section positioned in top-left corner */}
       <div className="fixed top-[5vh] left-[5vw] text-left w-[90vw] max-w-[800px] z-10 p-4 sm:p-8 [perspective:1000px]">
         <div className="relative my-2 sm:my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d] flex flex-wrap gap-2">
           <span
@@ -419,6 +546,116 @@ const StellarSkills = () => {
             className="inline-block text-[clamp(1rem,3vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
           >
             spectrum.
+          </span>
+        </div>
+      </div>
+
+      {/* Second message section positioned in bottom-right corner */}
+      <div className="fixed bottom-[5vh] right-[5vw] text-right w-[90vw] max-w-[800px] z-10 p-4 sm:p-8 [perspective:1000px]">
+        <div className="relative my-2 sm:my-4 min-h-[1.5em] overflow-visible [transform-style:preserve-3d] flex flex-wrap gap-1 sm:gap-2 justify-center sm:justify-end">
+          <span
+            ref={(el) => (secondTextElements.current[0] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            Rooted
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[1] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            in
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[2] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            <span
+              ref={(el) => (secondHighlightedText.current[2] = el)}
+              className="inline-block bg-clip-text [-webkit-background-clip:text] text-transparent [will-change:background]"
+            >
+              Core
+            </span>
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[3] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            web
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[4] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            <span
+              ref={(el) => (secondHighlightedText.current[4] = el)}
+              className="inline-block bg-clip-text [-webkit-background-clip:text] text-transparent [will-change:background]"
+            >
+              Fundamentals
+            </span>
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[5] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            ,
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[6] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            <span
+              ref={(el) => (secondHighlightedText.current[6] = el)}
+              className="inline-block bg-clip-text [-webkit-background-clip:text] text-transparent [will-change:background]"
+            >
+              Growing
+            </span>
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[7] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            with
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[8] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            every
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[9] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            shift
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[10] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            in
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[11] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            the
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[12] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            <span
+              ref={(el) => (secondHighlightedText.current[12] = el)}
+              className="inline-block bg-clip-text [-webkit-background-clip:text] text-transparent [will-change:background]"
+            >
+              Modern
+            </span>
+          </span>
+          <span
+            ref={(el) => (secondTextElements.current[13] = el)}
+            className="inline-block text-[clamp(0.8rem,2.5vw,1.75rem)] font-medium text-white [transform-origin:center] [transform-style:preserve-3d] [backface-visibility:hidden] [will-change:transform,opacity]"
+          >
+            stack.
           </span>
         </div>
       </div>
