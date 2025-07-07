@@ -337,7 +337,7 @@ const SkillAsteroid = ({
           fontWeight: "600",
           textShadow: "0 0 10px rgba(0,0,0,0.8)",
           whiteSpace: "nowrap",
-          opacity: !isScrollingActive && width > 70 ? 1 : 0, // Only show when not scrolling and asteroid is large enough
+          opacity: !isScrollingActive && width > 80 ? 1 : 0, // Only show when not scrolling and asteroid is large enough
           transition: "opacity 0.3s ease-out",
           borderColor: config.color,
           backgroundColor: "rgba(0,0,0,0.7)",
